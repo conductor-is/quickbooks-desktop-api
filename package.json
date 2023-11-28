@@ -1,0 +1,43 @@
+{
+  "name": "conductor-node",
+  "version": "11.2.4",
+  "description": "Easily integrate the entire QuickBooks Desktop API using fully-typed async TypeScript",
+  "keywords": [
+    "QuickBooks Desktop",
+    "QuickBooks Enterprise",
+    "QuickBooks",
+    "Intuit",
+    "QuickBooks Web Connector",
+    "qbXML",
+    "QBWC",
+    "QB Desktop",
+    "QBD"
+  ],
+  "homepage": "https://conductor.is",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/src/**/*.[jt]s",
+    "dist/package.json"
+  ],
+  "scripts": {
+    "prepack": "yarn --silent tsc && yarn --silent delete-compiled-dev-files && yarn --silent tsc-alias",
+    "delete-compiled-dev-files": "rm -rf `find ./dist -type d -name __tests__` ./dist/src/utils/test/*",
+    "postpack": "rm -rf dist",
+    "clean": "rm -rf dist package conductor-node-*.tgz tsconfig.tsbuildinfo",
+    "diff": "yarn pack && npm diff --diff=conductor-node@latest --diff=conductor-node-v$(node -p \"require('./package.json').version\").tgz && yarn clean",
+    "prepublishOnly": "yarn jest"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.21.4",
+    "tsc-alias": "^1.7.0"
+  }
+}

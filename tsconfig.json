@@ -1,0 +1,103 @@
+// https://www.typescriptlang.org/tsconfig
+{
+  "compilerOptions": {
+    /** conductor-node configuration */
+    // Override root config to output transpiled code.
+    "noEmit": false,
+    // Output `.d.ts` files for TypeScript to use with the transpiled JS files.
+    "declaration": true,
+    "outDir": "./dist/",
+    // Use `.` instead of `./src/` because we import `package.json` from the
+    // root directory to get the package name and version.
+    //
+    // We could leave this value undefined and let `tsc` determine the root
+    // directory, but we do not want the root directory to suddenly change and
+    // break several of our `scripts` in `package.json`. Instead, we want `tsc`
+    // to report an error so we know to update our hard-coded paths.
+    "rootDir": ".",
+
+    /** Monorepo configuration */
+    "target": "ESNext",
+    // We cannot yet migrate to native ESM because the loader API is still
+    // experimental, which means `ts-node`, `babel-node`, and `swc-node` still
+    // have issues. Hence, this field must match `type: "commonjs"` in each
+    // `package.json` file for TS to correctly work with third-party native ESM
+    // packages. Change this field to `NodeNext` when we upgrade.
+    "module": "CommonJS",
+    // Enable absolute import paths for local files.
+    "baseUrl": "./",
+    "paths": {
+      // Define this package-specific setting here to enable using `yarn tsc`
+      // from the root directory.
+      "@conductor/client-node/*": ["./src/*"]
+    },
+    // Next.js requires "preserve" to use its own optimized JSX transform.
+    // Though we only need this option for `apps/web` and
+    // `packages/client-react`, we enable it here so that we can run `yarn tsc`
+    // from the root directory for linting.
+    "jsx": "preserve",
+    "allowJs": false,
+    "resolveJsonModule": true,
+    // Disable emitting compiler output files like JavaScript source code,
+    // source-maps, or type declarations. Makes room for Babel or SWC to handle
+    // transpiling TypeScript to JavaScript. Leaves TypeScript as a tool for
+    // editor integration and as a source code type-checker.
+    // "noEmit": true,
+    // Ensure that each file can be safely transpiled without relying on other
+    // imports. Non-TypeScript transpilers, like Babel or SWC, can only operate
+    // on a single file at a time, preventing code transforms that depend on
+    // understanding the full type system. Enabling `isolatedModules` warns if
+    // you write certain code that can’t be correctly interpreted by a
+    // single-file transpilation process, such as const enums and namespaces.
+    "isolatedModules": true,
+    // Emit additional JavaScript to ease support for importing CommonJS
+    // modules. Required for `allowSyntheticDefaultImports`.
+    "esModuleInterop": true,
+    // Allow default imports from modules with no default export.
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    // Potential speedup that Next.js recommends.
+    "incremental": true,
+    // Potential speedup that TypeScript and Next.js recommend.
+    "skipLibCheck": true,
+
+    /* Type Checking */
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    // Enable all strict type checking options (listed below).
+    "strict": true,
+    // "alwaysStrict": true,
+    // "noImplicitAny": true,
+    // "noImplicitThis": true,
+    // "strictBindCallApply": true,
+    // "strictFunctionTypes": true,
+    // "strictNullChecks": true,
+    // "strictPropertyInitialization": true,
+    // "useUnknownInCatchVariables": true,
+
+    // Include the types listed below in the global scope.
+    //
+    // By defining these types in the base `tsconfig.json`, all packages and
+    // apps will load `next` into the global scope so that the type enforcements
+    // are consistent whether running `tsc` from the repo root or within a
+    // package that does not use `next`.
+    //
+    // We need this because `next` modifies the global namespace for
+    // `NodeJS.ProcessEnv` to include `NODE_ENV` as a readonly property. As a
+    // result, running `tsc` from the repo root, which we do for linting, tests,
+    // and VSCode, requires all packages to use `process.env.NODE_ENV`. Whereas
+    // `tsc` ran from within a package that does not use `next`, such as Render
+    // does for `packages/server`, requires `process.env["NODE_ENV"]`.
+    "types": ["node", "jest", "next"]
+  },
+  // Needed to exclude `jest.config.ts`.
+  "include": ["./src/**/*"]
+}

@@ -1,0 +1,6 @@
+{
+  "rules": {
+    // Permit `console` in the client package because the logger is server-only.
+    "no-console": "off"
+  }
+}
