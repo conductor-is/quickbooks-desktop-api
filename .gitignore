@@ -1,6 +1,10 @@
 ### Conductor ###
 .coverage/
 
+# The lock file is only for local development and does not reflect the
+# dependency versions when publishing this package to NPM.
+yarn.lock
+
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/archives,git,macos,nextjs,node,react,ssh,vim,visualstudiocode,yarn
