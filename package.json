@@ -1,6 +1,6 @@
 {
   "name": "conductor-node",
-  "version": "11.2.4",
+  "version": "11.2.6",
   "description": "Easily integrate the entire QuickBooks Desktop API using fully-typed async TypeScript",
   "keywords": [
     "QuickBooks Desktop",
