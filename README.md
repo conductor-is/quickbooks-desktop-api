@@ -24,6 +24,8 @@
 
 Conductor is a TypeScript-first Node.js API for **QuickBooks Desktop** (also known as QuickBooks Enterprise). In just a few lines, get real-time access to fetch, create, or update [_any_ QuickBooks Desktop object type](https://docs.conductor.is/qbd/api#supported-object-types) and receive a fully-typed response. Check out [the documentation](https://docs.conductor.is) to get started.
 
+Our team is building a data integration platform for vertical SaaS companies, starting with QuickBooks Desktop. We have spent over a decade building companies, scaling vast software systems, and obsessing over quality.
+
 <!-- markdownlint-disable MD033 -->
 <div align="center">
   <a href="https://docs.conductor.is"><img src="https://user-images.githubusercontent.com/170023/213273732-83dd6881-0b36-4787-820b-bd55cdc8444f.jpg" alt="QuickBooks Desktop autocomplete" width="600" /></a>
@@ -39,7 +41,7 @@ Conductor is a TypeScript-first Node.js API for **QuickBooks Desktop** (also kno
 
 ## Requirements
 
-1. A Conductor API key pair: one secret key, one publishable key. Please [email us](mailto:hello@conductor.is?subject=Conductor%20Beta) to join the private beta.
+1. A Conductor API key pair: one secret key, one publishable key. Please [email us](mailto:hello@conductor.is?subject=Conductor%20Beta%20Access&body=Hello!%20Tell%20us%20a%20bit%20about%20what%20you%20are%20building:%20) to join the beta.
 2. Node.js v16 or later.
 
 ## Installation
@@ -85,4 +87,4 @@ main();
 
 ## More Documentation
 
-Please see our full documentation with guides and code examples [available here](https://docs.conductor.is).
+Please see our [full documentation site](https://docs.conductor.is) for more docs, guides, and code examples.
