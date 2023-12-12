@@ -41,7 +41,7 @@ Conductor, the company, is building a data integration platform for vertical Saa
 
 ## Requirements
 
-1. A Conductor API key pair: one secret key, one publishable key. Please [email us](mailto:hello@conductor.is?subject=Conductor%20Beta%20Access&body=Hello!%20Tell%20us%20a%20bit%20about%20what%20you%20are%20building:%20) to join the beta.
+1. A Conductor API key pair: one secret key, one publishable key. Please [complete this form](https://73a5v9t55ed.typeform.com/to/VRX7rfrN) to join the beta.
 2. Node.js v16 or later.
 
 ## Installation
