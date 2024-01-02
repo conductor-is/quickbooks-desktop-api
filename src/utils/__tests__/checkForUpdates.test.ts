@@ -1,5 +1,8 @@
 import packageJson from "@conductor/client-node/../package.json";
-import { checkForUpdates } from "@conductor/client-node/utils/checkForUpdates";
+import {
+  checkForUpdates,
+  createFramedMessage,
+} from "@conductor/client-node/utils/checkForUpdates";
 import childProcess from "node:child_process";
 
 describe("checkForUpdates", () => {
@@ -9,7 +12,7 @@ describe("checkForUpdates", () => {
     jest.replaceProperty(process.env, "NODE_ENV", "development");
   });
 
-  it("exits early if `NODE_ENV` is `test`", () => {
+  it('exits early if `NODE_ENV` is "test"', () => {
     expect.assertions(1);
     jest.replaceProperty(process.env, "NODE_ENV", "test");
 
@@ -18,6 +21,53 @@ describe("checkForUpdates", () => {
     checkForUpdates();
 
     expect(childProcess.execSync).not.toHaveBeenCalled();
+  });
+
+  describe("CONDUCTOR_HIDE_UPDATE_MESSAGE", () => {
+    afterEach(() => {
+      // We cannot use `jest.replaceProperty()` here because it requires the
+      // property to already be defined.
+      delete process.env["CONDUCTOR_HIDE_UPDATE_MESSAGE"];
+    });
+
+    it("exits early if `CONDUCTOR_HIDE_UPDATE_MESSAGE` is truthy", () => {
+      expect.assertions(1);
+
+      process.env["CONDUCTOR_HIDE_UPDATE_MESSAGE"] = "true";
+      jest.spyOn(childProcess, "execSync");
+      checkForUpdates();
+
+      expect(childProcess.execSync).not.toHaveBeenCalled();
+    });
+
+    it("does not exit early if `CONDUCTOR_HIDE_UPDATE_MESSAGE` is falsy", () => {
+      expect.assertions(1);
+
+      // Avoid logging the update message while running tests for `yarn
+      // publish`, which modifies `package.json#version`. Normally, that part of
+      // `checkForUpdates()` would not be reached for this test.
+      jest.spyOn(console, "warn").mockImplementation();
+
+      process.env["CONDUCTOR_HIDE_UPDATE_MESSAGE"] = "false";
+      jest.spyOn(childProcess, "execSync");
+      checkForUpdates();
+
+      expect(childProcess.execSync).toHaveBeenCalledTimes(2);
+    });
+
+    it("does not exit early if `CONDUCTOR_HIDE_UPDATE_MESSAGE` is not defined", () => {
+      expect.assertions(1);
+      // Avoid logging the update message while running tests for `yarn
+      // publish`, which modifies `package.json#version`. Normally, that part of
+      // `checkForUpdates()` would not be reached for this test.
+      jest.spyOn(console, "warn").mockImplementation();
+
+      delete process.env["CONDUCTOR_HIDE_UPDATE_MESSAGE"];
+      jest.spyOn(childProcess, "execSync");
+      checkForUpdates();
+
+      expect(childProcess.execSync).toHaveBeenCalledTimes(2);
+    });
   });
 
   it("exits early if npm is not installed", () => {
@@ -61,8 +111,39 @@ describe("checkForUpdates", () => {
       checkForUpdates();
 
       expect(console.warn).toHaveBeenCalledWith(
-        `⚠️ Update available for Conductor: ${currentVersion} -> ${latestVersion}. To update, run: ${updateCommand} conductor-node@latest`,
+        createFramedMessage([
+          `🟡 Update available for Conductor! ${currentVersion} → ${latestVersion}`,
+          "",
+          "Run the following to update:",
+          `  ${updateCommand} ${packageJson.name}@latest`,
+        ]),
       );
     });
+  });
+});
+
+describe("createFramedMessage", () => {
+  it("correctly frames a single line of text", () => {
+    const lines = ["Single line test"];
+    const expected =
+      "┌────────────────────┐\n│  Single line test  │\n└────────────────────┘";
+    expect(createFramedMessage(lines)).toBe(expected);
+  });
+
+  it("correctly frames multiple lines of text", () => {
+    const lines = ["Line 1", "Longer Line 2", "L3"];
+    const expected =
+      "┌─────────────────┐\n" +
+      "│  Line 1         │\n" +
+      "│  Longer Line 2  │\n" +
+      "│  L3             │\n" +
+      "└─────────────────┘";
+    expect(createFramedMessage(lines)).toBe(expected);
+  });
+
+  it("handles an empty array", () => {
+    const lines: string[] = [];
+    const expected = "┌────┐\n└────┘";
+    expect(createFramedMessage(lines)).toBe(expected);
   });
 });

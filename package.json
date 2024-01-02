@@ -1,17 +1,20 @@
 {
   "name": "conductor-node",
-  "version": "11.2.6",
-  "description": "Easily integrate the entire QuickBooks Desktop API using fully-typed async TypeScript",
+  "version": "11.4.1",
+  "description": "QuickBooks Desktop API for Node.js and TypeScript",
   "keywords": [
+    "QuickBooks",
     "QuickBooks Desktop",
     "QuickBooks Enterprise",
-    "QuickBooks",
-    "Intuit",
     "QuickBooks Web Connector",
-    "qbXML",
     "QBWC",
+    "qbXML",
     "QB Desktop",
-    "QBD"
+    "QB Enterprise",
+    "QBD",
+    "QBDT",
+    "QBE",
+    "Intuit"
   ],
   "homepage": "https://conductor.is",
   "repository": "github:conductor-is/conductor-node",

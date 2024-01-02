@@ -6,7 +6,6 @@ import AuthSessionsResource from "@conductor/client-node/resources/AuthSessionsR
 import EndUsersResource from "@conductor/client-node/resources/EndUsersResource";
 import IntegrationConnectionsResource from "@conductor/client-node/resources/IntegrationConnectionsResource";
 import * as checkForUpdatesModule from "@conductor/client-node/utils/checkForUpdates";
-import { getApiServerUrlForEnvironment } from "@conductor/client-node/utils/http";
 
 describe("Client", () => {
   const apiKey = "mock-api-key";
@@ -47,10 +46,25 @@ describe("Client", () => {
     // @ts-expect-error -- Accessing a private property for testing.
     const httpClient = client.httpClient;
 
-    it("sets the base URL", () => {
-      expect(httpClient.defaults.baseURL).toBe(
-        `${getApiServerUrlForEnvironment()}/v1`,
-      );
+    describe("base URL", () => {
+      it("uses the environment variable `CONDUCTOR_MOCK_API_SERVER_URL` if set", () => {
+        expect(process.env["CONDUCTOR_MOCK_API_SERVER_URL"]).toBeDefined();
+        expect(httpClient.defaults.baseURL).toBe(
+          `${process.env["CONDUCTOR_MOCK_API_SERVER_URL"]}/v1`,
+        );
+      });
+
+      it("uses the default API server URL if the environment variable `CONDUCTOR_MOCK_API_SERVER_URL` is not set", () => {
+        jest.replaceProperty(process, "env", {
+          ...process.env,
+          CONDUCTOR_MOCK_API_SERVER_URL: undefined,
+        });
+        const client2 = new Client(apiKey);
+        // @ts-expect-error -- Accessing a private property for testing.
+        expect(client2.httpClient.defaults.baseURL).toBe(
+          "https://api.conductor.is/v1",
+        );
+      });
     });
 
     describe("headers", () => {

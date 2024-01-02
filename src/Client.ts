@@ -6,7 +6,6 @@ import AuthSessionsResource from "@conductor/client-node/resources/AuthSessionsR
 import EndUsersResource from "@conductor/client-node/resources/EndUsersResource";
 import IntegrationConnectionsResource from "@conductor/client-node/resources/IntegrationConnectionsResource";
 import { checkForUpdates } from "@conductor/client-node/utils/checkForUpdates";
-import { getApiServerUrlForEnvironment } from "@conductor/client-node/utils/http";
 import type { AxiosInstance, RawAxiosRequestHeaders } from "axios";
 import axios from "axios";
 
@@ -26,9 +25,6 @@ export default class Client {
 
   /**
    * Executes any QuickBooks Desktop (QBD) API against the specified end-user.
-   * See the official [QuickBooks Desktop API
-   * Reference](https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop)
-   * for a complete list of available APIs.
    */
   public readonly qbd: QbdIntegration;
 
@@ -51,8 +47,16 @@ export default class Client {
     apiKey: string,
     verbose: Required<ClientOptions>["verbose"],
   ): AxiosInstance {
+    // We use an environment variable for overriding the server URL for testing
+    // and development instead of checking `NODE_ENV` to ensure `conductor-node`
+    // users use the production API server when their `NODE_ENV` is set to
+    // "development". Only Conductor team members can use the mock API server.
+    const apiServerUrl =
+      process.env["CONDUCTOR_MOCK_API_SERVER_URL"] ??
+      "https://api.conductor.is";
+
     const httpClient = axios.create({
-      baseURL: `${getApiServerUrlForEnvironment()}/v1`,
+      baseURL: `${apiServerUrl}/v1`,
       headers: this.createHeaders(apiKey),
       timeout: 0, // No timeout (default).
     });

@@ -10072,11 +10072,94 @@ export type PayrollDetailReportType =
   | "PayrollTransactionDetail"
   | "PayrollTransactionsByPayee";
 
+export interface PayrollItemWageAdd {
+  /** Description of the wage: for example, Regular Pay or Overtime Pay. */
+  Name: string;
+  /** If `IsActive` is true, this object is currently enabled for use by QuickBooks. The default value is true. */
+  IsActive?: boolean;
+  /** The type of pay. */
+  WageType: WageType;
+  /** Refers to an expense account. If an `ExpenseAccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. */
+  ExpenseAccountRef: ExpenseAccountRef;
+}
+
+export interface PayrollItemWageAddRq {
+  PayrollItemWageAdd: PayrollItemWageAdd;
+  /** You use this if you want to limit the data that will be returned in the response. In this list, you specify the name of each top-level element or aggregate that you want to be returned in the response to the request. You cannot specify fields within an aggregate, for example, you cannot specify a `City` within an `Address`: you must specify `Address` and will get the entire address. The names specified in the list are not parsed, so you must be especially careful to supply valid names, properly cased. No error is returned in the status code if you specify an invalid name. Notice that if you want to return custom data or private data extensions, you must specify the `DataExtRet` element and you must supply the `OwnerID` set to either a value of 0 (custom data) or the GUID for the private data. */
+  IncludeRetElement?: string[] | string;
+}
+
+export interface PayrollItemWageAddRs {
+  PayrollItemWageRet?: PayrollItemWageRet;
+}
+
+export interface PayrollItemWageQueryRq {
+  /** One or more `ListID` values. Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`.
+
+  A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID?: string[] | string;
+  /** A list of one or more `FullName` values. `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
+  FullName?: string[] | string;
+  /** Limits the number of objects that a query returns. (To get a count of how many objects could possibly be returned, use the `metaData` query attribute.) If you include a `MaxReturned` value, it must be at least 1. */
+  MaxReturned?: number;
+  /** Used in filters to select list objects based on whether or not they are currently enabled for use by QuickBooks. The default value is `asActiveOnly`, which selects only list objects that are active. */
+  ActiveStatus?: ActiveStatus;
+  /** Selects objects modified on or after this date. See the note below regarding QBFC usage.
+
+  For desktop versions of QuickBooks, the `FromModifiedDate` and `ToModifiedDate` must be between 1970-01-01 and 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST). (The time portion of the field was not supported in qbXML version 1.0 or 1.1.) Also, for desktop versions of QuickBooks, if `FromModifiedDate` includes a date but not a time (for example, if you set `FromModifiedDate` to 2003-02-14), the time is assumed to be zero (2003-02-14T00:00:00). If you omit `FromModifiedDate`, it will be set to 1970-01-01T00:00:00 (1969-12-31T16:00:00-08:00 PST).
+
+  For QBOE, the `FromModifiedDate` and `ToModifiedDate` must be between 1900-01-01T00:00:00 and 9999-12-31T00:00:00. If `FromModifiedDate` includes a date but not a time (for example, if you set `FromModifiedDate` to 2003-02-14), the time is assumed to be zero (2003-02-14T00:00:00). If you omit `FromModifiedDate`, it will be set to 1900-01-01T00:00:00.
+
+  Note: When specifying this in QBFC, you need to supply the parameter `asDateOnly`, which is a Boolean. If `asDateOnly` is true, the date value will be represented as a date only (without a time). If `asDateOnly` is false, the date value will be represented as date and time, padded with zeros if necessary, and set to the beginning of the day if no time is provided. The `asDateOnly` parameter is especially useful in the `ToModifiedDate` field of a query: If `asDateOnly` is set to true in the `ToModifiedDate` field of a query, then the query includes elements modified up to the end of the day. If `asDateOnly` is false, the query includes elements modified up to the specified time (or up to the beginning of the day if no time is included). */
+  FromModifiedDate?: string;
+  /** Selects objects modified on or before this date. See the note below on QBFC usage.
+
+  For desktop versions of QuickBooks, the `ToModifiedDate` and `FromModifiedDate` must be between 01/01/1970 and 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST). (Note that the time portion of the field was not supported in qbXML version 1.0 or 1.1.) If `ToModifiedDate` includes a date but not a time (for example, if you set `ToModifiedDate` to 2003-02-14), the time is assumed to be the end of the day (2003-02-14T23:59:59). If you omit `ToModifiedDate` altogether, it will be set to 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST).
+
+  For QBOE, the `ToModifiedDate` and `FromModifiedDate` must be between 01/01/1900 and 9999-12-31T00:00:00. If `ToModifiedDate` includes a date but not a time (for example, if you set `ToModifiedDate` to 2003-02-14), the time is assumed to be the end of the day (2003-02-14T23:59:59). If you omit `ToModifiedDate` altogether, it will be set to 9999-12-31T00:00:00.
+
+  Note: When specifying this in QBFC, you need to supply the parameter `asDateOnly`, which is a Boolean. If `asDateOnly` is true, the date value will be represented as a date only (without a time). If `asDateOnly` is false, the date value will be represented as date and time, padded with zeros if necessary, and set to the beginning of the day if no time is provided. The `asDateOnly` parameter is especially useful in the `ToModifiedDate` field of a query: If `asDateOnly` is set to true in the `ToModifiedDate` field of a query, then the query includes elements modified up to the end of the day. If `asDateOnly` is false, the query includes elements modified up to the specified time (or up to the beginning of the day if no time is included). */
+  ToModifiedDate?: string;
+  /** Filters according to the object’s `Name`. */
+  NameFilter?: NameFilter;
+  /** Filters according to the object’s `Name`. */
+  NameRangeFilter?: NameRangeFilter;
+  /** You use this if you want to limit the data that will be returned in the response. In this list, you specify the name of each top-level element or aggregate that you want to be returned in the response to the request. You cannot specify fields within an aggregate, for example, you cannot specify a `City` within an `Address`: you must specify `Address` and will get the entire address.
+
+  The names specified in the list are not parsed, so you must be especially careful to supply valid names, properly cased. No error is returned in the status code if you specify an invalid name.
+
+  Notice that if you want to return custom data or private data extensions, you must specify the `DataExtRet` element and you must supply the `OwnerID` set to either a value of 0 (custom data) or the GUID for the private data. */
+  IncludeRetElement?: string[] | string;
+}
+
+export interface PayrollItemWageQueryRs {
+  PayrollItemWageRet: PayrollItemWageRet[];
+}
+
 export interface PayrollItemWageRef {
   /** Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
   ListID?: string;
   /** `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
   FullName?: string;
+}
+
+export interface PayrollItemWageRet {
+  /** Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID: string;
+  /** Time the object was created. */
+  TimeCreated: string;
+  /** Time the object was last modified. */
+  TimeModified: string;
+  /** A number that the server generates and assigns to this object. Every time the object is changed, the server will change its `EditSequence` value. When you try to modify a list object, you must provide its `EditSequence`. The server compares the `EditSequence` you provide with the `EditSequence` in memory to make sure you are dealing with the latest copy of the object. If you are not, the server will reject the request and return an error. Because `EditSequence` is only used to check whether two objects match, there is no reason to interpret its value. */
+  EditSequence: string;
+  /** Description of the wage: for example, Regular Pay or Overtime Pay. */
+  Name: string;
+  /** If `IsActive` is true, this object is currently enabled for use by QuickBooks. The default value is true. */
+  IsActive?: boolean;
+  /** The type of pay. */
+  WageType: WageType;
+  /** Refers to an expense account. If an `ExpenseAccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. */
+  ExpenseAccountRef: ExpenseAccountRef;
 }
 
 export interface PayrollSummaryReportQueryRq {
@@ -14523,6 +14606,17 @@ export interface VendorTypeRet {
   /** The number of ancestors. For example, The customer job with `Name` = carpets and `FullName` = Jones:Building2:carpets would have a sublevel of 2. */
   Sublevel: number;
 }
+
+export type WageType =
+  | "Bonus"
+  | "Commission"
+  | "HourlyOvertime"
+  | "HourlyRegular"
+  | "HourlySick"
+  | "HourlyVacation"
+  | "SalaryRegular"
+  | "SalarySick"
+  | "SalaryVacation";
 
 export interface WorkersCompCodeAdd {
   /** The case-insensitive name of a list object, not including the names of its ancestors. `Name` must be unique, unless it is the `Name` of a “hierarchical” list object. List objects in different hierarchies can have duplicate names because their `FullNames` will still be unique. For example, two objects could both have the `Name` kitchen, but they could have unique `FullNames`, such as Job12:kitchen and Baker:kitchen. For built-in currencies, `Name` is the internationally accepted currency name and is not editable. */

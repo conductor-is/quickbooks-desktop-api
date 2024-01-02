@@ -613,7 +613,7 @@ export default class QbdIntegration extends BaseIntegration {
 
     /**
      * Modifies an existing Check. Notice that you cannot use this to modify
-     * BillPaymentChecks.
+     * `BillPaymentChecks`.
      *
      * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/CheckMod
      */
@@ -1607,7 +1607,7 @@ export default class QbdIntegration extends BaseIntegration {
      * If you Add an invoice that has an inventory item on it, QB will
      * automatically calculate COGS and post it to the COGS account. (The
      * inventory item will need to be setup to post to the COGS account and must
-     * have a unit cost in it.) However, notice that such an InvoiceAdd has
+     * have a unit cost in it.) However, notice that such an `InvoiceAdd` has
      * sales prices, not cost, so the Add is not impacting the cost of the item.
      * The cost of the item is only affected by purchases (bills and item
      * receipts) sales and inventory adjustments.
@@ -2595,8 +2595,9 @@ export default class QbdIntegration extends BaseIntegration {
      * In a `TimeTracking` message, `ItemServiceRef` refers to the type of work.
      * If no `CustomerRef` is specified, then `ItemServiceRef` is not needed. If
      * `IsBillable` is set to true, then `TimeTrackingAdd` must include both
-     * `ItemServiceRef` and `CustomerRef`. See more:
-     * https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/ItemServiceAdd
+     * `ItemServiceRef` and `CustomerRef`.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/ItemServiceAdd
      */
     add: async (
       endUserId: string,
@@ -2978,6 +2979,60 @@ export default class QbdIntegration extends BaseIntegration {
         { OtherNameQueryRq: params },
         "OtherNameQueryRs",
         "OtherNameRet",
+      ),
+  };
+
+  /**
+   * A payroll wage item describes and names a payment scheme, for example,
+   * Regular Pay or Overtime Pay.
+   */
+  public payrollItemWage = {
+    /**
+     * Adds a payroll wage item. Each payroll wage item describes and names a
+     * payment scheme, for example, Regular Pay or Overtime Pay. A
+     * `PayrollItemWageRef` aggregate refers to one of these wage items. In a
+     * request, if a `PayrollItemWageRef` aggregate includes both `FullName` and
+     * `ListID`, `FullName` will be ignored.
+     *
+     * Within QuickBooks, a timesheet can specify a payroll wage item only if
+     * the following criteria are met:
+     * - The name on the timesheet (which corresponds to the EntityRef in the
+     *   `TimeTracking` object) is on the QuickBooks Employee list, and
+     * - The “Use time data to create paychecks” preference is turned on in the
+     *   QuickBooks Payroll Info window that provides detailed employee
+     *   information employee.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/PayrollItemWageAdd
+     */
+    add: async (
+      endUserId: string,
+      params: QbdTypes.PayrollItemWageAddRq["PayrollItemWageAdd"],
+    ): Promise<
+      NonNullable<QbdTypes.PayrollItemWageAddRs["PayrollItemWageRet"]>
+    > =>
+      this.sendRequestWrapper(
+        endUserId,
+        { PayrollItemWageAddRq: { PayrollItemWageAdd: params } },
+        "PayrollItemWageAddRs",
+        "PayrollItemWageRet",
+      ),
+
+    /**
+     * Queries for the specified payroll wage item or set of items.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/PayrollItemWageQuery
+     */
+    query: async (
+      endUserId: string,
+      params: QbdTypes.PayrollItemWageQueryRq = {},
+    ): Promise<
+      NonNullable<QbdTypes.PayrollItemWageQueryRs["PayrollItemWageRet"]>
+    > =>
+      this.sendRequestWrapper(
+        endUserId,
+        { PayrollItemWageQueryRq: params },
+        "PayrollItemWageQueryRs",
+        "PayrollItemWageRet",
       ),
   };
 
@@ -3469,13 +3524,13 @@ export default class QbdIntegration extends BaseIntegration {
     /**
      * This report returns information from any of three QuickBooks payroll
      * reports:
-     * - Payroll summary report This report shows the total wages, taxes
+     * - Payroll summary report: This report shows the total wages, taxes
      *   withheld, deductions from net pay, additions to net pay, and
      *   employer-paid taxes and contributions for each employee on the payroll.
-     * - Employee earnings summary report This report shows information similar
+     * - Employee earnings summary report: This report shows information similar
      *   to the payroll summary report, but in a different layout. The report
      *   has a row for each employee and a column for each payroll item.
-     * - Payroll liability balances report This report lists the payroll
+     * - Payroll liability balances report: This report lists the payroll
      *   liabilities the QuickBooks company owes to various agencies, such as
      *   the federal government, your state government, insurance plan
      *   administrators, labor unions, etc. The report covers unpaid liabilities
@@ -3979,14 +4034,23 @@ export default class QbdIntegration extends BaseIntegration {
    */
   public timeTracking = {
     /**
-     * The time-tracking transactions that are returned in this query include
-     * time tracking information that was entered into QuickBooks manually or
-     * gathered using the QuickBooks “Timer” or “Stopwatch.” Note that the
-     * QuickBooks Timer application can run on its own without QuickBooks, but
-     * the QuickBooks SDK cannot access the Timer data directly. The Timer data
-     * must be imported into QuickBooks before it is accessible via the SDK.)
+     * This request adds a time tracking transaction to QuickBooks, mirroring
+     * the time-tracking feature available in the QuickBooks UI. The time
+     * tracking feature allows a QuickBooks user to base payroll or invoices on
+     * time worked. You can add time-tracking information to any vendor,
+     * employee, or person on the Other Names list in QuickBooks.
      *
-     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/TimeTrackingQuery
+     * If `IsBillable` is set to true, both `CustomerRef` and `ItemServiceRef`
+     * are required. There is no link between an invoice and the time entries.
+     * However, when you do the invoicing from QuickBooks, QuickBooks does mark
+     * the time entries as “billed.” If you don’t record the time entries as
+     * billed properly, then you get into a user workflow issue where every time
+     * the user creates an invoice for a customer, QB pops up a dialog asking if
+     * they want to bill the un-billed time (which you already billed from your
+     * app).
+     *
+     * See more:
+     * https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/TimeTrackingAdd
      */
     add: async (
       endUserId: string,
