@@ -1,6 +1,6 @@
 {
   "name": "conductor-node",
-  "version": "11.4.1",
+  "version": "11.5.2",
   "description": "QuickBooks Desktop API for Node.js and TypeScript",
   "keywords": [
     "QuickBooks",
@@ -18,8 +18,8 @@
   ],
   "homepage": "https://conductor.is",
   "repository": "github:conductor-is/conductor-node",
-  "author": "Conductor <support@conductor.is>",
   "license": "MIT",
+  "author": "Conductor <support@conductor.is>",
   "type": "commonjs",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -28,15 +28,12 @@
     "dist/package.json"
   ],
   "scripts": {
-    "prepack": "yarn --silent tsc && yarn --silent delete-compiled-dev-files && yarn --silent tsc-alias",
-    "delete-compiled-dev-files": "rm -rf `find ./dist -type d -name __tests__` ./dist/src/utils/test/*",
-    "postpack": "rm -rf dist",
     "clean": "rm -rf dist package conductor-node-*.tgz tsconfig.tsbuildinfo",
+    "delete-compiled-dev-files": "rm -rf `find ./dist -type d -name __tests__` ./dist/src/utils/test/*",
     "diff": "yarn pack && npm diff --diff=conductor-node@latest --diff=conductor-node-v$(node -p \"require('./package.json').version\").tgz && yarn clean",
+    "prepack": "yarn --silent tsc && yarn --silent delete-compiled-dev-files && yarn --silent tsc-alias",
+    "postpack": "rm -rf dist",
     "prepublishOnly": "yarn jest"
-  },
-  "engines": {
-    "node": ">=16"
   },
   "dependencies": {
     "axios": "^1.4.0"
@@ -44,5 +41,8 @@
   "devDependencies": {
     "axios-mock-adapter": "^1.21.4",
     "tsc-alias": "^1.7.0"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }
