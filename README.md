@@ -15,7 +15,7 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://docs.conductor.is">Docs</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://docs.conductor.is/qbd-examples/">Examples</a>
+  <a href="https://docs.conductor.is/qbd-examples">Examples</a>
   <br />
   <hr />
 </div>
@@ -80,7 +80,7 @@ async function main() {
   console.log("Complete the QuickBooks Desktop auth:", authSession.authFlowUrl);
 
   // 3. Get a list of all Customers from QuickBooks Desktop for this EndUser.
-  const qbdCustomers = await conductor.qbd.customers.query(endUser.id);
+  const qbdCustomers = await conductor.qbd.customer.query(endUser.id);
   console.log("QuickBooks Desktop customers:", qbdCustomers);
 }
 
