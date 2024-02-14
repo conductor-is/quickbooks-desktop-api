@@ -40,6 +40,11 @@ Conductor, the company, is building a data integration platform for vertical Saa
 
 This repository is a library for conveniently accessing Conductor's QuickBooks Desktop API from TypeScript or JavaScript. The library is a wrapper around the Conductor REST API, providing a fully-typed, easy-to-use interface for fetching, creating, and updating QuickBooks Desktop objects.
 
+## Requirements
+
+1. A Conductor API key pair: one secret key, one publishable key. **Please [sign up to join the beta](https://73a5v9t55ed.typeform.com/to/VRX7rfrN).**
+2. Node.js v16 or later.
+
 ## Documentation
 
 1. [Get Started](https://docs.conductor.is/overview/get-started)
@@ -48,11 +53,6 @@ This repository is a library for conveniently accessing Conductor's QuickBooks D
 4. [REST API](https://docs.conductor.is/qbd/rest)
 5. [API Reference](https://docs.conductor.is/apis)
 6. [Error Handling](https://docs.conductor.is/usage/error-handling)
-
-## Requirements
-
-1. A Conductor API key pair: one secret key, one publishable key. Please [complete this form](https://73a5v9t55ed.typeform.com/to/VRX7rfrN) to join the beta.
-2. Node.js v16 or later.
 
 ## Installation
 
