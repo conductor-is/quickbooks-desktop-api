@@ -22,9 +22,7 @@
 
 ## What is Conductor?
 
-Conductor is a TypeScript-first Node.js API for **QuickBooks Desktop** (sometimes called QuickBooks Enterprise). In just a few lines, get real-time access to fetch, create, or update [_any_ QuickBooks Desktop object type](https://docs.conductor.is/qbd/api#supported-object-types) and receive a fully-typed response. Check out [the documentation](https://docs.conductor.is) to get started.
-
-We also offer a [REST API](https://docs.conductor.is/qbd/rest).
+Conductor is a real-time, fully-typed API for **QuickBooks Desktop** (sometimes called QuickBooks Enterprise), available via TypeScript, Node.js, and REST. In just a few lines, get real-time access to fetch, create, or update [_any_ QuickBooks Desktop object type](<[/qbd/api#supported-object-types](https://docs.conductor.is/qbd/api#supported-object-types)>) and receive a fully-typed response. Check out [the documentation](https://docs.conductor.is) to get started.
 
 Conductor, the company, is building a data integration platform for vertical SaaS companies, starting with QuickBooks Desktop. Our team has spent over a decade building companies, scaling vast software systems, and obsessing over quality.
 
@@ -33,13 +31,18 @@ Conductor, the company, is building a data integration platform for vertical Saa
   <a href="https://docs.conductor.is"><img src="https://user-images.githubusercontent.com/170023/213273732-83dd6881-0b36-4787-820b-bd55cdc8444f.jpg" alt="QuickBooks Desktop autocomplete" width="600" /></a>
 </div>
 
+## What is this repo?
+
+This repository is a library for conveniently accessing Conductor's QuickBooks Desktop API from TypeScript or JavaScript. The library is a wrapper around the Conductor REST API, providing a fully-typed, easy-to-use interface for fetching, creating, and updating QuickBooks Desktop objects.
+
 ## Documentation
 
 1. [Get Started](https://docs.conductor.is/overview/get-started)
 2. [Quickstart](https://docs.conductor.is/overview/quickstart)
-3. [QuickBooks Desktop APIs](https://docs.conductor.is/qbd/api)
-4. [API Reference](https://docs.conductor.is/apis)
-5. [Error Handling](https://docs.conductor.is/usage/error-handling)
+3. [Node.js / TypeScript API](https://docs.conductor.is/qbd/api)
+4. [REST API](https://docs.conductor.is/qbd/rest)
+5. [API Reference](https://docs.conductor.is/apis)
+6. [Error Handling](https://docs.conductor.is/usage/error-handling)
 
 ## Requirements
 
@@ -87,6 +90,6 @@ async function main() {
 main();
 ```
 
-## More Documentation
+## More documentation
 
 Please see our [full documentation site](https://docs.conductor.is) for more docs, guides, and code examples.
