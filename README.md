@@ -7,13 +7,6 @@
     </picture>
   </a>
   <h3>QuickBooks Desktop API for Node.js, TypeScript, and REST</h3>
-  <a href="https://npmjs.com/package/conductor-node"><img src="https://img.shields.io/npm/dm/conductor-node.svg?logo=npm" alt="NPM download count"></a>
-  <a href="https://npmjs.org/package/conductor-node"><img src="https://img.shields.io/npm/v/conductor-node.svg?logo=npm" alt="Package version"></a>
-  <img src="https://img.shields.io/badge/coverage-100%25-brightgreen" alt="Code coverage">
-  <img src="https://img.shields.io/badge/CI-passing-brightgreen?logo=github" alt="CI status">
-  <a href="LICENSE"><img src="https://img.shields.io/npm/l/conductor-node.svg?color=blue&logo=github" alt="License" /></a>
-  <br />
-  <br />
   <a href="https://docs.conductor.is/overview/quickstart">Quickstart</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://conductor.is">Website</a>
@@ -21,8 +14,15 @@
   <a href="https://docs.conductor.is">Docs</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://docs.conductor.is/qbd-examples">Examples</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://twitter.com/conductor_is">Twitter</a>
   <br />
-  <hr style="height: 1px;" />
+  <br />
+  <a href="https://npmjs.com/package/conductor-node"><img src="https://img.shields.io/npm/dm/conductor-node.svg?logo=npm" alt="NPM download count"></a>
+  <a href="https://npmjs.org/package/conductor-node"><img src="https://img.shields.io/npm/v/conductor-node.svg?logo=npm" alt="Package version"></a>
+  <img src="https://img.shields.io/badge/coverage-100%25-brightgreen" alt="Code coverage">
+  <a href="LICENSE"><img src="https://img.shields.io/npm/l/conductor-node.svg?color=blue&logo=github" alt="License" /></a>
+  <hr />
 </div>
 
 ## What is Conductor?
