@@ -1,6 +1,11 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <div align="center">
-  <h1><a href="https://conductor.is">Conductor</a></h1>
+  <a href="https://conductor.is">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/conductor-is/quickbooks-desktop-api/assets/170023/162ee6a9-75ac-41e9-9f1e-2ecc1d88f841">
+      <img alt="Conductor logo" src="https://github.com/conductor-is/quickbooks-desktop-api/assets/170023/d67464b8-53a7-4d33-afeb-05a2efde1fa8" width="325">
+    </picture>
+  </a>
   <h3>QuickBooks Desktop API for Node.js, TypeScript, and REST</h3>
   <a href="https://npmjs.com/package/conductor-node"><img src="https://img.shields.io/npm/dm/conductor-node.svg?logo=npm" alt="NPM download count"></a>
   <a href="https://npmjs.org/package/conductor-node"><img src="https://img.shields.io/npm/v/conductor-node.svg?logo=npm" alt="Package version"></a>
@@ -17,7 +22,7 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://docs.conductor.is/qbd-examples">Examples</a>
   <br />
-  <hr />
+  <hr style="height: 1px;" />
 </div>
 
 ## What is Conductor?
@@ -28,7 +33,7 @@ Conductor, the company, is building a data integration platform for vertical Saa
 
 <!-- markdownlint-disable MD033 -->
 <div align="center">
-  <a href="https://docs.conductor.is"><img src="https://user-images.githubusercontent.com/170023/213273732-83dd6881-0b36-4787-820b-bd55cdc8444f.jpg" alt="QuickBooks Desktop autocomplete" width="600" /></a>
+  <a href="https://docs.conductor.is"><img src="https://user-images.githubusercontent.com/170023/213273732-83dd6881-0b36-4787-820b-bd55cdc8444f.jpg" alt="QuickBooks Desktop autocomplete" width="600" style="border-radius: 20px;" /></a>
 </div>
 
 ## What is this repo?
