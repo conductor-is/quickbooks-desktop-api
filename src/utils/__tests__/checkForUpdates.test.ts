@@ -70,6 +70,36 @@ describe("checkForUpdates", () => {
     });
   });
 
+  describe("npm is not installed", () => {
+    beforeEach(() => {
+      jest.spyOn(childProcess, "execSync").mockImplementation(() => {
+        throw new Error("/bin/sh: npm: command not found");
+      });
+    });
+
+    it("exits early", () => {
+      expect.assertions(1);
+      jest.spyOn(console, "warn").mockImplementation();
+      checkForUpdates();
+      // Confirm the function exited early by not reaching the part that logs
+      // the update message.
+      expect(console.warn).not.toHaveBeenCalled();
+    });
+
+    it("does not log an error message for the unrecognized command`", () => {
+      expect.assertions(1);
+      checkForUpdates();
+      // Confirm we passed `stdio: "ignore"` to prevent the shell from logging
+      // the error message, which occurs even though we catch the error.
+      // - NOTE: We tried to simulate confirming the process does not log here
+      //   by spying on `process.stdout.write()`, but it does not work because
+      //   it uses a separate process.
+      expect(childProcess.execSync).toHaveBeenCalledWith("npm --version", {
+        stdio: "ignore",
+      });
+    });
+  });
+
   it("exits early if npm is not installed", () => {
     expect.assertions(1);
     jest.spyOn(childProcess, "execSync").mockImplementation(() => {
@@ -112,7 +142,7 @@ describe("checkForUpdates", () => {
 
       expect(console.warn).toHaveBeenCalledWith(
         createFramedMessage([
-          `🟡 Update available for Conductor! ${currentVersion} → ${latestVersion}`,
+          `🟡 Update available for Conductor! ${currentVersion} -> ${latestVersion}`,
           "",
           "Run the following to update:",
           `  ${updateCommand} ${packageJson.name}@latest`,

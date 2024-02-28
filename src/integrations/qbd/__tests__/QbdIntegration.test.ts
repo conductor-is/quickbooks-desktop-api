@@ -2,6 +2,8 @@ import Client from "@conductor/client-node/Client";
 import { ConductorIntegrationError } from "@conductor/client-node/utils/error";
 import { expectToRejectWithConductorError } from "@conductor/client-node/utils/test/misc";
 
+const CATEGORIES_REQUIRING_QUERY_PARAMS = new Set(["txnDeleted"]);
+
 describe("QbdIntegration", () => {
   describe("invokes `sendRequest` with the correct arguments", () => {
     const qbdIntegration = new Client("mock-api-key").qbd;
@@ -61,32 +63,34 @@ describe("QbdIntegration", () => {
         },
       );
 
-      it("query without `params`", async () => {
-        expect.assertions(3);
-        const methodNameTitleCase = "Query";
-        const sendRequestSpy = jest
-          // @ts-expect-error -- Accessing a private property for testing.
-          .spyOn(qbdIntegration, "sendRequest")
-          // @ts-expect-error -- Accessing a private property for testing.
-          .mockResolvedValue({
-            [`${categoryNameTitleCase}${methodNameTitleCase}Rs`]: {
-              [`${categoryNameTitleCase}Ret`]: expectedResponse,
-            },
-          });
+      if (!CATEGORIES_REQUIRING_QUERY_PARAMS.has(categoryName)) {
+        it("query without `params`", async () => {
+          expect.assertions(3);
+          const methodNameTitleCase = "Query";
+          const sendRequestSpy = jest
+            // @ts-expect-error -- Accessing a private property for testing.
+            .spyOn(qbdIntegration, "sendRequest")
+            // @ts-expect-error -- Accessing a private property for testing.
+            .mockResolvedValue({
+              [`${categoryNameTitleCase}${methodNameTitleCase}Rs`]: {
+                [`${categoryNameTitleCase}Ret`]: expectedResponse,
+              },
+            });
 
-        const queryWithoutParams = methodCategory["query"] as (
-          endUserId: string,
-        ) => Promise<object>;
-        const response = await queryWithoutParams(endUserId);
+          const queryWithoutParams = methodCategory["query"] as (
+            endUserId: string,
+          ) => Promise<object>;
+          const response = await queryWithoutParams(endUserId);
 
-        expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-        expect(sendRequestSpy).toHaveBeenCalledWith(
-          endUserId,
-          "quickbooks_desktop",
-          { [`${categoryNameTitleCase}${methodNameTitleCase}Rq`]: {} },
-        );
-        expect(response).toStrictEqual(expectedResponse);
-      });
+          expect(sendRequestSpy).toHaveBeenCalledTimes(1);
+          expect(sendRequestSpy).toHaveBeenCalledWith(
+            endUserId,
+            "quickbooks_desktop",
+            { [`${categoryNameTitleCase}${methodNameTitleCase}Rq`]: {} },
+          );
+          expect(response).toStrictEqual(expectedResponse);
+        });
+      }
     });
 
     describe("report", () => {

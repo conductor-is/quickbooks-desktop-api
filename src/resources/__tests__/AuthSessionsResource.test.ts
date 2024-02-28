@@ -24,7 +24,7 @@ describe("AuthSessionsResource", () => {
       endUserId: authSessionCreateInput.endUserId,
       clientSecret: authSessionClientSecret,
       authFlowUrl: `https://conductor.is/qbd/${authSessionClientSecret}?key=${authSessionCreateInput.publishableKey}`,
-      returnUrl: authSessionCreateInput.returnUrl,
+      redirectUrl: authSessionCreateInput.redirectUrl,
     });
     let result: AuthSession;
 

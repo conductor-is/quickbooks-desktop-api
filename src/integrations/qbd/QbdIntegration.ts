@@ -179,7 +179,7 @@ export default class QbdIntegration extends BaseIntegration {
      * Provides functionality found in the Find/Advanced-Find window to find
      * bills that are to be paid by check. The Find/Advanced-Find windows can be
      * reached by clicking the Find button on the main QuickBooks menubar, by
-     * selecting Edit->Find, or simply by using the shortcut CTRL-F. Notice that
+     * selecting "Edit" -> "Find", or simply by using the shortcut CTRL-F. Notice that
      * you can use the `metaData` attribute inside the query tag if you want
      * only a count of the bills that will be returned from the query. If you
      * know the bill’s transaction ID or reference number, you could use these,
@@ -291,6 +291,8 @@ export default class QbdIntegration extends BaseIntegration {
    */
   public billPaymentCheck = {
     /**
+     * Adds a bill payment check.
+     *
      * A `BillPaymentCheckAdd` request must include either `PaymentAmount`,
      * `SetCredit`, or `DiscountAmount` (or more than one of these). If none of
      * these three is included, the SDK will return an error.
@@ -302,18 +304,21 @@ export default class QbdIntegration extends BaseIntegration {
      * `AppliedAmount` field.
      *
      * `BillPaymentCheckAdd` provides the functionality found in the Pay Bills
-     * form in the QuickBooks UI. You can reach this form by selecting "Retail"
-     * -> "Pay Bills" from the main QuickBooks menubar. `BillPayment` is
+     * form in the QuickBooks UI. You can reach this form by selecting
+     * Retail->Pay Bills from the main QuickBooks menubar. `BillPayment` is
      * described in detail in the chapter on handling receive payment and bill
-     * payment in the QB SDK Programmer’s Guide. Notice that you can supply only
-     * one of these sub aggregates in the request. If you want to pay multiple
-     * bills, you must issue a separate request for each bill pay.
+     * payment in the QB SDK Programmer’s Guide. Notice that the request
+     * requires one (but not more than one!) `BillPaymentCheckAdd` sub
+     * aggregate, which is provided to support the SDK macro feature in this
+     * request. Notice that you can supply only one of these sub aggregates in
+     * the request. If you want to pay multiple bills, you must issue a separate
+     * request for each bill pay.
      *
      * If you are using more than one A/P account, make sure that the
      * `APAccountRef` in the `BillPaymentCheckAdd` matches the `APAccountRef`
-     * that was used when the Bill was originally added. That is, the Bill was
-     * entered in a particular account payable: use that same account payable
-     * when you pay the bill using this request.
+     * that was used when the `Bill` was originally added. That is, the `Bill`
+     * was entered in a particular account payable: use that same account
+     * payable when you pay the bill using this request.
      *
      * Notice that although you can set the `IsToBePrinted` flag, you cannot
      * print checks using the SDK.
@@ -396,10 +401,13 @@ export default class QbdIntegration extends BaseIntegration {
       ),
 
     /**
+     * Returns bill payment check transactions based on the supplied query
+     * criteria.
+     *
      * Provides functionality found in the Find/Advanced-Find window to find
      * bill payments paid by check. The Find/Advanced-Find windows can be
      * reached by clicking the Find button on the main QuickBooks menubar, by
-     * selecting Edit->Find, or simply by using the shortcut CTRL-F. Notice that
+     * selecting "Edit" -> "Find", or simply by using the shortcut CTRL-F. Notice that
      * you can use the `metaData` attribute inside the query tag if you want
      * only a count of the bill payments that will be returned from the query.
      *
@@ -439,6 +447,121 @@ export default class QbdIntegration extends BaseIntegration {
         { BillPaymentCheckQueryRq: params },
         "BillPaymentCheckQueryRs",
         "BillPaymentCheckRet",
+      ),
+  };
+
+  /**
+   * A bill payment credit card is a transaction that represents a payment by
+   * credit card for a bill.
+   */
+  public billPaymentCreditCard = {
+    /**
+     * Adds a bill payment credit card.
+     *
+     * A `BillPaymentCreditCardAdd` request must include either `PaymentAmount`,
+     * `SetCredit`, or `DiscountAmount` (or more than one of these). If none of
+     * these three is included, the SDK will return an error.
+     *
+     * `BillPaymentCreditCardAdd` provides functionality found in the Pay Bills
+     * form in the QuickBooks UI. You can reach this form by selecting "Retail"
+     * -> "Pay Bills" from the main QuickBooks menubar. `BillPayment` is
+     * described in detail in the chapter on handling receive payment and bill
+     * payment in the QB SDK Programmer’s Guide. Notice that the request
+     * requires one (but not more than one!) `BillPaymentCreditCardAdd`
+     * sub-aggregate. Notice that you can supply only one of these
+     * sub-aggregates in the request. If you want to pay multiple bills, you
+     * must issue a separate request for each bill pay.
+     *
+     * If you are using more than one A/P account, make sure that the
+     * `APAccountRef` in the `BillPaymentCreditCardAdd` matches the
+     * `APAccountRef` that was used when the `Bill` was originally added. That
+     * is, the `Bill` was entered in a particular account payable: use that same
+     * account payable when you pay the bill using this request.
+     *
+     * Notice that although you can set the `IsToBePrinted` flag, you cannot
+     * print checks using the SDK.
+     *
+     * Finally, notice that it is possible to issue this request using only
+     * `SetCredit` to apply an existing credit to the bill. However, if you do
+     * this, you should be aware that no transaction ID is generated. The credit
+     * and the bill simply are linked.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/BillPaymentCreditCardAdd
+     */
+    add: async (
+      endUserId: string,
+      params: QbdTypes.BillPaymentCreditCardAddRq["BillPaymentCreditCardAdd"],
+    ): Promise<
+      NonNullable<
+        QbdTypes.BillPaymentCreditCardAddRs["BillPaymentCreditCardRet"]
+      >
+    > =>
+      this.sendRequestWrapper(
+        endUserId,
+        { BillPaymentCreditCardAddRq: { BillPaymentCreditCardAdd: params } },
+        "BillPaymentCreditCardAddRs",
+        "BillPaymentCreditCardRet",
+      ),
+
+    /**
+     * Returns bill payment credit card transactions based on the supplied query
+     * criteria.
+     *
+     * Provides functionality found in the Find/Advanced Find window to find
+     * bill payments that were paid by credit card. The Find/Advanced Find
+     * windows can be reached by clicking the Find button on the main QuickBooks
+     * menubar, by selecting "Edit" -> "Find", or simply by using the shortcut
+     * CTRL-F. Notice that you can use the metaData attribute inside the query
+     * tag if you want only a count of the bill payments that will be returned
+     * from the query.
+     *
+     * If you know the bill’s transaction ID or reference number, you could use
+     * these, or search by transaction date, or search by the date where the
+     * bill was last modified.
+     *
+     * Important: If you made a bill payment by credit card, and ONLY applied a
+     * credit using `SetCredit` (no funds were applied other than the credit),
+     * then that payment will not be returned in this query because it is not
+     * considered a separate transaction and has no `TxnID`. To get that kind of
+     * payment, you must do a `BillQuery` on the original bill and specify
+     * `IncludeLinkedTxns`. Any applied credit will be linked directly to the
+     * bill.
+     *
+     * If you need additional filters, you can use the entity filter to search
+     * for bills from a specific vendor or vendor sub (using the
+     * `ListIDWithChildren` or `FullNameWithChildren` tags). You can also search
+     * for bills entered against a particular account (the `APAccountRef`
+     * specified in the originating `BillAdd` request). You can specify all
+     * subaccounts by using the various *WithChildren tags. For example, to find
+     * all bills entered against Checking where you have multiple checking
+     * accounts, you would use the `ListIDWithChildren` or
+     * `FullNameWithChildren` tags inside your AccountFilter tags. Finally, you
+     * can filter on the `RefNumber` or `RefNumber` range. Notice that all of
+     * these filters can be used together (ANDed) if desired.
+     *
+     * To prevent the return of too much data, you can use `MaxReturned` to
+     * limit the total number of bills returned from the query. In addition, you
+     * can limit the type of data that is returned for each bill, using
+     * `IncludeRetElement`.
+     *
+     * Finally, you can specify whether each bill contains line items using the
+     * `IncludeLineItems`, which by default is `False` (no line item data).
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/BillPaymentCreditCardQuery
+     */
+    query: async (
+      endUserId: string,
+      params: QbdTypes.BillPaymentCreditCardQueryRq = {},
+    ): Promise<
+      NonNullable<
+        QbdTypes.BillPaymentCreditCardQueryRs["BillPaymentCreditCardRet"]
+      >
+    > =>
+      this.sendRequestWrapper(
+        endUserId,
+        { BillPaymentCreditCardQueryRq: params },
+        "BillPaymentCreditCardQueryRs",
+        "BillPaymentCreditCardRet",
       ),
   };
 
@@ -4234,6 +4357,40 @@ export default class QbdIntegration extends BaseIntegration {
         { TransferInventoryQueryRq: params },
         "TransferInventoryQueryRs",
         "TransferInventoryRet",
+      ),
+  };
+
+  /**
+   * Query deleted transaction elements, such as invoices, bills, and checks.
+   */
+  public txnDeleted = {
+    /**
+     * Returns all transaction elements deleted within the last 90 days, grouped
+     * according to object type.
+     *
+     * For example, if the request specifies `TxnDelType` elements of `Bill` and
+     * then `Check`, it will return all the `Bill` deletes first, then all the
+     * `Check` deletes.
+     *
+     * By default, the records are returned in ascending order, according to the
+     * “real” delete time. For example:
+     * - If transaction A is deleted at 10 a.m. and B is deleted at 11 a.m., the
+     *   query request will return A first, then B.
+     * - However, if the QuickBooks user moves the clock back before deleting B
+     *   (for example, B is deleted at 9 a.m.), the query will still return
+     *   first A then B, because B was deleted after A in “real” time.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/TxnDeletedQuery
+     */
+    query: async (
+      endUserId: string,
+      params: QbdTypes.TxnDeletedQueryRq,
+    ): Promise<NonNullable<QbdTypes.TxnDeletedQueryRs["TxnDeletedRet"]>> =>
+      this.sendRequestWrapper(
+        endUserId,
+        { TxnDeletedQueryRq: params },
+        "TxnDeletedQueryRs",
+        "TxnDeletedRet",
       ),
   };
 

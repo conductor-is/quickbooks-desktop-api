@@ -13,9 +13,12 @@ export function checkForUpdates(): void {
     return;
   }
 
-  // Exit early if npm is not installed.
+  // Exit early if `npm` is not installed.
   try {
-    childProcess.execSync("which npm");
+    childProcess.execSync("npm --version", {
+      // Prevent the shell from internally logging the error message.
+      stdio: "ignore",
+    });
   } catch {
     return;
   }
@@ -34,7 +37,7 @@ export function checkForUpdates(): void {
 
     console.warn(
       createFramedMessage([
-        `🟡 Update available for Conductor! ${currentVersion} → ${latestVersion}`,
+        `🟡 Update available for Conductor! ${currentVersion} -> ${latestVersion}`,
         "",
         "Run the following to update:",
         `  ${updateCommand} ${packageJson.name}@latest`,

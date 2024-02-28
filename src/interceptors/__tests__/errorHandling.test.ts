@@ -20,7 +20,7 @@ describe("error handling interceptors", () => {
     expect.assertions(2);
     const responseHeaders = {
       foo: "123",
-      "Request-Id": "abc",
+      "Conductor-Request-Id": "abc",
     };
     const serverError: ConductorServerError = {
       error: {
@@ -30,7 +30,7 @@ describe("error handling interceptors", () => {
         code: "QBD_REQUEST_ERROR",
         httpStatusCode: HttpStatusCode.BadGateway,
         integrationCode: "QBD-123",
-        requestId: responseHeaders["Request-Id"],
+        requestId: responseHeaders["Conductor-Request-Id"],
       },
     };
     mockAdapter
@@ -49,7 +49,7 @@ describe("error handling interceptors", () => {
     expect.assertions(2);
     const responseHeaders = {
       foo: "123",
-      "Request-Id": "abc",
+      "Conductor-Request-Id": "abc",
     };
     const serverError: ConductorServerError = {
       error: {
@@ -58,7 +58,7 @@ describe("error handling interceptors", () => {
         type: "UNKNOWN_TEST_TYPE",
         code: "UNKNOWN_TEST_CODE",
         httpStatusCode: HttpStatusCode.InternalServerError,
-        requestId: responseHeaders["Request-Id"],
+        requestId: responseHeaders["Conductor-Request-Id"],
       },
     };
     mockAdapter
@@ -78,7 +78,7 @@ describe("error handling interceptors", () => {
     const invalidError = "invalid-json";
     const responseHeaders = {
       foo: "123",
-      "Request-Id": "abc",
+      "Conductor-Request-Id": "abc",
     };
     mockAdapter
       .onGet("/end_users")
@@ -89,19 +89,19 @@ describe("error handling interceptors", () => {
         message: "Invalid JSON received from the Conductor API.",
         code: "INVALID_JSON_RESPONSE",
         httpStatusCode: HttpStatusCode.InternalServerError,
-        requestId: responseHeaders["Request-Id"],
+        requestId: responseHeaders["Conductor-Request-Id"],
         headers: responseHeaders,
         raw: invalidError,
       }),
     );
   });
 
-  it("ignores the casing of the `Request-Id` response header field name", async () => {
+  it("ignores the casing of the `Conductor-Request-Id` response header field name", async () => {
     expect.assertions(2);
     const invalidError = "invalid-json";
     const responseHeaders = {
       foo: "123",
-      "REQUEST-ID": "abc",
+      "CONDUCTOR-REQUEST-ID": "abc",
     };
     mockAdapter
       .onGet("/end_users")
@@ -112,7 +112,7 @@ describe("error handling interceptors", () => {
         message: "Invalid JSON received from the Conductor API.",
         code: "INVALID_JSON_RESPONSE",
         httpStatusCode: HttpStatusCode.InternalServerError,
-        requestId: responseHeaders["REQUEST-ID"],
+        requestId: responseHeaders["CONDUCTOR-REQUEST-ID"],
         headers: responseHeaders,
         raw: invalidError,
       }),

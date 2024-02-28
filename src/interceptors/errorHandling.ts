@@ -33,10 +33,11 @@ export function addErrorHandlingInterceptors(httpClient: AxiosInstance): void {
           code: "INVALID_JSON_RESPONSE",
           httpStatusCode: error.status ?? HttpStatusCode.InternalServerError,
           // @ts-expect-error -- `error.response.headers` always exists as an `AxiosHeaders` instance.
-          requestId: error.response.headers.get("request-id") as string,
+          requestId: error.response.headers.get(
+            "Conductor-Request-Id",
+          ) as string,
           headers,
-          // Include to understand why `isWellFormedConductorServerError()`
-          // failed.
+          // Help debug if `isWellFormedConductorServerError()` fails.
           raw: errorData,
         });
       }

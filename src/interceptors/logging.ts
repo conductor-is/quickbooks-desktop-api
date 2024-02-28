@@ -35,7 +35,7 @@ export function addLoggingInterceptors(
       // Log after the other interceptor wraps the response error in a
       // `ConductorError`.
       // NOTE: We cannot include duration because we lack access to
-      // `AxiosError.config` because we already wrapped the error.
+      // `AxiosError#config` because we already wrapped the error.
       if (verbose) {
         // No prefix "Conductor error:" because the error already includes a
         // prefix (e.g., `ConductorConnectionError`).
@@ -46,25 +46,47 @@ export function addLoggingInterceptors(
   );
 }
 
-export function createRequestLogObject(config: AxiosRequestConfig): {
-  endpoint: string;
+interface RequestLogObject {
+  method?: string;
+  url?: string;
+  headers?: {
+    "Content-Type"?: string;
+    Authorization?: string;
+  };
   body?: Record<string, unknown>;
-} {
-  let endpoint = config.method?.toUpperCase();
-  if (config.url !== undefined) {
-    if (endpoint === undefined) {
-      endpoint = config.url;
-    } else {
-      endpoint += ` ${config.url}`;
-    }
+}
+
+export function createRequestLogObject(
+  config: AxiosRequestConfig,
+): RequestLogObject {
+  const requestInfo: RequestLogObject = {};
+
+  if (config.method !== undefined) {
+    requestInfo.method = config.method.toUpperCase();
   }
-  const requestInfo = {} as ReturnType<typeof createRequestLogObject>;
-  if (endpoint !== undefined) {
-    requestInfo.endpoint = endpoint;
+
+  if (config.baseURL !== undefined || config.url !== undefined) {
+    requestInfo.url = (config.baseURL ?? "") + (config.url ?? "");
   }
+
   if (config.data !== undefined) {
     requestInfo.body = config.data as Record<string, unknown>;
   }
+
+  if (config.headers !== undefined) {
+    requestInfo.headers = {};
+
+    if (config.headers["Content-Type"] !== undefined) {
+      requestInfo.headers["Content-Type"] = config.headers[
+        "Content-Type"
+      ] as string;
+    }
+
+    if (config.headers.Authorization !== undefined) {
+      requestInfo.headers.Authorization = "BEARER sk_live_************";
+    }
+  }
+
   return requestInfo;
 }
 

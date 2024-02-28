@@ -30,10 +30,14 @@ describe("logging interceptors", () => {
       await client.endUsers.list();
 
       expect(console.log).toHaveBeenCalledTimes(2);
-      expect(console.log).toHaveBeenCalledWith(
+      // Only check the request log, not the response log.
+      expect(console.log).toHaveBeenNthCalledWith(
+        1,
         "Conductor request:",
         stringifyForLogs({
-          endpoint: "GET /end_users",
+          method: "GET",
+          url: "http://localhost:4000/v1/end_users",
+          headers: { Authorization: "BEARER sk_live_************" },
         }),
       );
     });
@@ -52,11 +56,15 @@ describe("logging interceptors", () => {
       await client.endUsers.create(endUserInput);
 
       expect(console.log).toHaveBeenCalledTimes(2);
-      expect(console.log).toHaveBeenCalledWith(
+      // Only check the request log, not the response log.
+      expect(console.log).toHaveBeenNthCalledWith(
+        1,
         "Conductor request:",
         stringifyForLogs({
-          endpoint: "POST /end_users",
+          method: "POST",
+          url: "http://localhost:4000/v1/end_users",
           body: endUserInput,
+          headers: { Authorization: "BEARER sk_live_************" },
         }),
       );
     });
@@ -76,14 +84,18 @@ describe("logging interceptors", () => {
 
       expect(response).toStrictEqual(expectedResponse);
       expect(console.log).toHaveBeenCalledTimes(2);
-      expect(console.log).toHaveBeenCalledWith(
+      // Only check the response log, not the request log.
+      expect(console.log).toHaveBeenNthCalledWith(
+        2,
         "Conductor response:",
         stringifyForLogs({
           duration: `${durationMs / 1000}s`,
           status: 200,
           data: expectedResponse,
           request: {
-            endpoint: "GET /end_users",
+            method: "GET",
+            url: "http://localhost:4000/v1/end_users",
+            headers: { Authorization: "BEARER sk_live_************" },
           },
         }),
       );
@@ -138,61 +150,103 @@ describe("logging interceptors", () => {
 });
 
 describe("createRequestLogObject", () => {
-  it("returns an object with `endpoint` as `method` and `url`", () => {
+  it("handles an empty config", () => {
+    const config: AxiosRequestConfig = {};
+    expect(createRequestLogObject(config)).toStrictEqual({});
+  });
+
+  it("handles a config with `method`", () => {
     const config: AxiosRequestConfig = {
-      method: "GET",
-      url: "http://example.com",
-      data: { key: "value" },
+      method: "get",
     };
-    const result = createRequestLogObject(config);
-    expect(result).toStrictEqual({
-      endpoint: "GET http://example.com",
-      body: { key: "value" },
+    expect(createRequestLogObject(config)).toStrictEqual({
+      method: "GET",
     });
   });
 
-  it("returns an object with `endpoint` as only `method` when `url` is missing", () => {
+  it("handles a config with `baseUrl` and `url`", () => {
     const config: AxiosRequestConfig = {
+      baseURL: "https://api.example.com",
+      url: "/end_users",
+    };
+    expect(createRequestLogObject(config)).toStrictEqual({
+      url: "https://api.example.com/end_users",
+    });
+  });
+
+  it("handles a config with `url` and no `baseUrl`", () => {
+    const config: AxiosRequestConfig = {
+      url: "/end_users",
+    };
+    expect(createRequestLogObject(config)).toStrictEqual({
+      url: "/end_users",
+    });
+  });
+
+  it("handles a config with `baseUrl` and no `url`", () => {
+    const config: AxiosRequestConfig = {
+      baseURL: "https://api.example.com",
+    };
+    expect(createRequestLogObject(config)).toStrictEqual({
+      url: "https://api.example.com",
+    });
+  });
+
+  it("handles a config with `data`", () => {
+    const config: AxiosRequestConfig = {
+      data: {
+        name: "John",
+        age: 30,
+      },
+    };
+    expect(createRequestLogObject(config)).toStrictEqual({
+      body: {
+        name: "John",
+        age: 30,
+      },
+    });
+  });
+
+  it("handles a config with `headers`", () => {
+    const config: AxiosRequestConfig = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer sk_live_12345",
+      },
+    };
+    expect(createRequestLogObject(config)).toStrictEqual({
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "BEARER sk_live_************",
+      },
+    });
+  });
+
+  it("handles a full config", () => {
+    const config: AxiosRequestConfig = {
+      method: "post",
+      baseURL: "https://api.example.com",
+      url: "/end_users",
+      data: {
+        name: "John",
+        age: 30,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer sk_live_12345",
+      },
+    };
+    expect(createRequestLogObject(config)).toStrictEqual({
       method: "POST",
-      data: { key: "value" },
-    };
-    const result = createRequestLogObject(config);
-    expect(result).toStrictEqual({
-      endpoint: "POST",
-      body: { key: "value" },
-    });
-  });
-
-  it("returns an object with `endpoint` as only `endpoint` when `method` is missing", () => {
-    const config: AxiosRequestConfig = {
-      url: "http://example.com",
-      data: { key: "value" },
-    };
-    const result = createRequestLogObject(config);
-    expect(result).toStrictEqual({
-      endpoint: "http://example.com",
-      body: { key: "value" },
-    });
-  });
-
-  it("returns an object without `endpoint` when both `method` and `url` are missing", () => {
-    const config: AxiosRequestConfig = {
-      data: { key: "value" },
-    };
-    const result = createRequestLogObject(config);
-    expect(result).toStrictEqual({
-      body: { key: "value" },
-    });
-  });
-
-  it("returns an object without `body` when `data` is missing", () => {
-    const config: AxiosRequestConfig = {
-      method: "GET",
-      url: "http://example.com",
-    };
-    const result = createRequestLogObject(config);
-    expect(result).toStrictEqual({
-      endpoint: "GET http://example.com",
+      url: "https://api.example.com/end_users",
+      body: {
+        name: "John",
+        age: 30,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "BEARER sk_live_************",
+      },
     });
   });
 });

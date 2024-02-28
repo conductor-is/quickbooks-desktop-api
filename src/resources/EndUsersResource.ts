@@ -3,7 +3,9 @@ import type { IntegrationSlug } from "@conductor/client-node/resources/Integrati
 
 export interface EndUser {
   /**
-   * The unique identifier for the object.
+   * The unique identifier for this EndUser. You must save this value to your
+   * database because it is how you identify the target of your requests in the
+   * future.
    */
   readonly id: string;
   /**

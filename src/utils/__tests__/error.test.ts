@@ -26,7 +26,7 @@ describe("ConductorError", () => {
     requestId: "123",
     headers: {
       "Test-Header": "abc",
-      "Request-Id": "123",
+      "Conductor-Request-Id": "123",
     },
   };
   // @ts-expect-error - Accessing protected property for testing.

@@ -149,14 +149,14 @@ describe("package", () => {
 
       describe("imports and instantiates the client, error subclasses, and types", () => {
         describe("TypeScript", () => {
-          // Merge multiple tests into one because otherwise each additional
-          // `ts-node -e` call adds ~1 second to the test suite.
-          it("module", () => {
-            expect(() =>
-              // Use `ts-node` from the repo's `node_modules` to avoid having to
-              // install it in `installDir`.
-              execSync(
-                `yarn --cwd=${__dirname} ts-node --eval="
+          // Run all checks within a single `ts-node --eval` call, instead of
+          // splitting them into multiple `it` blocks, because each additional
+          // `ts-node --eval` call adds ~1 second to the test suite.
+          describe("module", () => {
+            it.each([true, false])("esModuleInterop=%s", (esModuleInterop) => {
+              expect(() =>
+                execSync(
+                  `npx ts-node --compilerOptions '{"esModuleInterop":${esModuleInterop}}' --eval="
                   // Imports and instantiates a Client in TypeScript.
                   import Conductor from 'conductor-node';
                   const conductor = new Conductor('mock-api-key');
@@ -174,16 +174,22 @@ describe("package", () => {
                   import type { QbdTypes } from 'conductor-node';
                   const defaultAccountType: QbdTypes.AccountType = 'Bank';
                   console.log(defaultAccountType);
-                "`,
-                { cwd: installDir },
-              ),
-            ).not.toThrow();
+                "`
+                    // Remove the comments because `ts-node --eval` ignores the
+                    // line breaks and thinks the leading "//" on the first line
+                    // applies to the entire block.
+                    .replaceAll(/\/\/.*\n/g, "")
+                    .replaceAll(/\n +/g, " "),
+                  { cwd: installDir },
+                ),
+              ).not.toThrow();
+            });
           });
 
           it("commonjs", () => {
             expect(() =>
               execSync(
-                `yarn --cwd=${__dirname} ts-node --eval="
+                `npx ts-node --eval="
                   // Imports and instantiates a Client in TypeScript.
                   const Conductor = require('conductor-node');
                   const conductor = new Conductor('mock-api-key');
@@ -201,7 +207,12 @@ describe("package", () => {
                   const { QbdTypes } = require('conductor-node');
                   const defaultAccountType: QbdTypes.AccountType = 'Bank';
                   console.log(defaultAccountType);
-                "`,
+                "`
+                  // Remove the comments because `ts-node --eval` ignores the
+                  // line breaks and thinks the leading "//" on the first line
+                  // applies to the entire block.
+                  .replaceAll(/\/\/.*\n/g, "")
+                  .replaceAll(/\n +/g, " "),
                 { cwd: installDir },
               ),
             ).not.toThrow();

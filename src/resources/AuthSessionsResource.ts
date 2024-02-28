@@ -27,10 +27,10 @@ export interface AuthSession {
   readonly expiresAt: string;
   /**
    * The URL to which Conductor will redirect the end-user to return to your app
-   * after they complete the authentication flow. If `null`, their browser tab
-   * will close instead.
+   * after they complete the authentication flow. If `undefined`, their browser
+   * tab will close instead.
    */
-  readonly returnUrl: string | undefined;
+  readonly redirectUrl: string | undefined;
 }
 
 export interface AuthSessionCreateInput {
@@ -54,7 +54,7 @@ export interface AuthSessionCreateInput {
    * after they complete the authentication flow. If not provided, their browser
    * tab will close instead.
    */
-  readonly returnUrl?: string;
+  readonly redirectUrl?: string;
 }
 
 export default class AuthSessionsResource extends BaseResource {

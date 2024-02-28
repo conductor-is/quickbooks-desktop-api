@@ -16,7 +16,7 @@ export function generateMockAuthSession(
       "pk_live",
     )}`,
     expiresAt: new Date().toISOString(),
-    returnUrl: "https://example.com",
+    redirectUrl: "https://example.com",
     ...overrides,
   };
 }
@@ -27,7 +27,7 @@ export function generateMockAuthSessionCreateInput(
   return {
     publishableKey: generateUniqueId("pk_live"),
     endUserId: generateUniqueId("end_usr"),
-    returnUrl: "https://example.com",
+    redirectUrl: "https://example.com",
     ...overrides,
   };
 }

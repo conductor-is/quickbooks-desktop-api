@@ -11,6 +11,8 @@ import * as ErrorModule from "@conductor/client-node/utils/error";
  */
 if (module.exports !== undefined) {
   module.exports = Client;
+  // Required for when `esModuleInterop` is `false`.
+  (module.exports as Record<string, unknown>)["default"] = Client;
   // Extend `module.exports` with the exports from `ErrorModule`.
   Object.assign(module.exports, ErrorModule);
 }
