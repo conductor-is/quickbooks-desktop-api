@@ -87,9 +87,11 @@ async function main() {
   });
   console.log("Complete the QuickBooks Desktop auth:", authSession.authFlowUrl);
 
-  // 3. Get a list of all Customers from QuickBooks Desktop for this EndUser.
-  const qbdCustomers = await conductor.qbd.customer.query(endUser.id);
-  console.log("QuickBooks Desktop customers:", qbdCustomers);
+  // 3. Get a list of invoices from this EndUser's QuickBooks Desktop.
+  const qbdInvoices = await conductor.qbd.customer.query(endUser.id, {
+    MaxReturned: 10,
+  });
+  console.log("QuickBooks Desktop invoices:", qbdInvoices);
 }
 
 main();
