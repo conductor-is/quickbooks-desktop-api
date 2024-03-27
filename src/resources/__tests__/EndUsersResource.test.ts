@@ -3,6 +3,7 @@ import type {
   EndUserPingOutput,
 } from "@conductor/client-node/resources/EndUsersResource";
 import EndUsersResource from "@conductor/client-node/resources/EndUsersResource";
+import type { ApiListResponse } from "@conductor/client-node/resources/base";
 import {
   generateMockEndUser,
   generateMockEndUserCreateInput,
@@ -22,10 +23,14 @@ describe("EndUsersResource", () => {
 
   describe("list", () => {
     const endUsers: EndUser[] = [generateMockEndUser(), generateMockEndUser()];
-    let result: EndUser[];
+    let result: ApiListResponse<EndUser>;
 
     beforeAll(async () => {
-      mockAdapter.onGet("/end_users").reply(200, endUsers);
+      mockAdapter.onGet("/end_users").reply(200, {
+        url: "/v1/end_users",
+        objectType: "list",
+        data: endUsers,
+      });
       result = await endUsersResource.list();
     });
 
@@ -38,7 +43,11 @@ describe("EndUsersResource", () => {
     });
 
     it("returns all end_users", () => {
-      expect(result).toStrictEqual(endUsers);
+      expect(result).toStrictEqual({
+        url: "/v1/end_users",
+        objectType: "list",
+        data: endUsers,
+      });
     });
   });
 

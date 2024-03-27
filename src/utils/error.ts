@@ -62,7 +62,7 @@ export abstract class ConductorError extends Error {
    * your end-users in your app's UI.
    *
    * This value exists for *every* error. E.g., for a QBD connection error, it
-   * might recommend the end-user to check that their QuickBooks Desktop is open
+   * might recommend the end-user to confirm their QuickBooks Desktop is open
    * and that they're logged in. But if a Conductor API key is expired, e.g.,
    * this message will just say "An internal server error occurred. Please try
    * again later.".

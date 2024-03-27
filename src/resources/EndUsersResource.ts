@@ -1,5 +1,6 @@
 import BaseResource from "@conductor/client-node/resources/BaseResource";
 import type { IntegrationSlug } from "@conductor/client-node/resources/IntegrationConnectionsResource";
+import type { ApiListResponse } from "@conductor/client-node/resources/base";
 
 export interface EndUser {
   /**
@@ -8,6 +9,10 @@ export interface EndUser {
    * future.
    */
   readonly id: string;
+  /**
+   * The object's type. This will always be "end_user".
+   */
+  readonly objectType: "end_user";
   /**
    * Your end-user's unique ID in _your_ database. Must be distinct from your
    * other end-users.
@@ -42,8 +47,10 @@ export default class EndUsersResource extends BaseResource {
   /**
    * Returns a list of your EndUsers.
    */
-  public async list(): Promise<EndUser[]> {
-    const { data } = await this.httpClient.get<EndUser[]>(this.ROUTE);
+  public async list(): Promise<ApiListResponse<EndUser>> {
+    const { data } = await this.httpClient.get<ApiListResponse<EndUser>>(
+      this.ROUTE,
+    );
     return data;
   }
 

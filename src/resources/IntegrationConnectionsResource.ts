@@ -1,4 +1,5 @@
 import BaseResource from "@conductor/client-node/resources/BaseResource";
+import type { ApiListResponse } from "@conductor/client-node/resources/base";
 
 export type IntegrationSlug = "quickbooks_desktop";
 
@@ -7,6 +8,10 @@ export interface IntegrationConnection {
    * The unique identifier for the object.
    */
   readonly id: string;
+  /**
+   * The object's type. This will always be "integration_connection".
+   */
+  readonly objectType: "integration_connection";
   /**
    * The ID of the EndUser who owns this IntegrationConnection.
    */
@@ -32,10 +37,10 @@ export default class IntegrationConnectionsResource extends BaseResource {
   /**
    * Returns a list of all IntegrationConnections of all your EndUsers.
    */
-  public async list(): Promise<IntegrationConnection[]> {
-    const { data } = await this.httpClient.get<IntegrationConnection[]>(
-      this.ROUTE,
-    );
+  public async list(): Promise<ApiListResponse<IntegrationConnection>> {
+    const { data } = await this.httpClient.get<
+      ApiListResponse<IntegrationConnection>
+    >(this.ROUTE);
     return data;
   }
 

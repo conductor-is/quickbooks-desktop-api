@@ -1,5 +1,6 @@
 import type { IntegrationConnection } from "@conductor/client-node/resources/IntegrationConnectionsResource";
 import IntegrationConnectionsResource from "@conductor/client-node/resources/IntegrationConnectionsResource";
+import type { ApiListResponse } from "@conductor/client-node/resources/base";
 import { generateMockIntegrationConnection } from "@conductor/client-node/utils/test/generators/integrationConnection";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
@@ -20,12 +21,14 @@ describe("IntegrationConnectionsResource", () => {
       generateMockIntegrationConnection(),
       generateMockIntegrationConnection(),
     ];
-    let result: IntegrationConnection[];
+    let result: ApiListResponse<IntegrationConnection>;
 
     beforeAll(async () => {
-      mockAdapter
-        .onGet("/integration_connections")
-        .reply(200, integrationConnections);
+      mockAdapter.onGet("/integration_connections").reply(200, {
+        url: "/v1/integration_connections",
+        objectType: "list",
+        data: integrationConnections,
+      });
       result = await integrationConnectionsResource.list();
     });
 
@@ -38,7 +41,11 @@ describe("IntegrationConnectionsResource", () => {
     });
 
     it("returns all IntegrationConnections", () => {
-      expect(result).toStrictEqual(integrationConnections);
+      expect(result).toStrictEqual({
+        url: "/v1/integration_connections",
+        objectType: "list",
+        data: integrationConnections,
+      });
     });
   });
 

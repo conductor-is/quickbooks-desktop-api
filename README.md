@@ -64,7 +64,7 @@ yarn add conductor-node
 
 ## Usage
 
-The full API documentation is available [here](https://docs.conductor.is) along with many code examples. The code below is a quickstart example.
+The full API documentation is available [here](https://docs.conductor.is) along with many code examples. The following is a quickstart example:
 
 ```ts
 import Conductor from "conductor-node";

@@ -108,7 +108,7 @@ describe("logging interceptors", () => {
       jest.spyOn(console, "log").mockImplementation();
       const conductorError = await client.endUsers
         .list()
-        .catch((error: ConductorError) => error);
+        .catch((error: unknown) => error);
       expect(conductorError).toBeInstanceOf(ConductorError);
       expect(console.log).toHaveBeenCalledTimes(2);
       expect(console.log).toHaveBeenCalledWith(

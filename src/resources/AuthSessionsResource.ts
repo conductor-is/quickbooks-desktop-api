@@ -6,6 +6,10 @@ export interface AuthSession {
    */
   readonly id: string;
   /**
+   * The object's type. This will always be "auth_session".
+   */
+  readonly objectType: "auth_session";
+  /**
    * The ID of the EndUser for whom to create an IntegrationConnection.
    */
   readonly endUserId: string;

@@ -6,6 +6,7 @@ export function generateMockIntegrationConnection(
 ): IntegrationConnection {
   return {
     id: generateUniqueId("int_conn"),
+    objectType: "integration_connection",
     endUserId: generateUniqueId("end_usr"),
     integrationSlug: "quickbooks_desktop",
     createdAt: new Date().toISOString(),

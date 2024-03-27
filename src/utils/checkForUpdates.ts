@@ -1,6 +1,6 @@
 import packageJson from "@conductor/client-node/../package.json";
 import { isEnvironmentVariableTruthy } from "@conductor/client-node/utils/env";
-import childProcess from "node:child_process";
+import axios from "axios";
 
 export function checkForUpdates(): void {
   if (process.env.NODE_ENV === "test") {
@@ -13,37 +13,35 @@ export function checkForUpdates(): void {
     return;
   }
 
-  // Exit early if `npm` is not installed.
-  try {
-    childProcess.execSync("npm --version", {
-      // Prevent the shell from internally logging the error message.
-      stdio: "ignore",
-    });
-  } catch {
-    return;
-  }
-
   const currentVersion = packageJson.version;
-  const latestVersion = childProcess
-    .execSync(`npm view ${packageJson.name} version --silent`)
-    .toString()
-    .trim();
+  const packageName = encodeURIComponent(packageJson.name);
 
-  if (currentVersion !== latestVersion) {
-    const updateCommand =
-      process.env["npm_execpath"]?.includes("yarn") === true
-        ? "yarn add"
-        : "npm install";
+  axios
+    .get<{ latest: string }>(
+      `https://registry.npmjs.org/-/package/${packageName}/dist-tags`,
+    )
+    .then((response) => {
+      const latestVersion = response.data.latest;
 
-    console.warn(
-      createFramedMessage([
-        `🟡 Update available for Conductor! ${currentVersion} -> ${latestVersion}`,
-        "",
-        "Run the following to update:",
-        `  ${updateCommand} ${packageJson.name}@latest`,
-      ]),
-    );
-  }
+      if (currentVersion !== latestVersion) {
+        const updateCommand =
+          process.env["npm_execpath"]?.includes("yarn") === true
+            ? "yarn add"
+            : "npm install";
+
+        console.warn(
+          createFramedMessage([
+            `🟡 Update available for Conductor! ${currentVersion} -> ${latestVersion}`,
+            "",
+            "Run the following to update:",
+            `  ${updateCommand} ${packageName}@latest`,
+          ]),
+        );
+      }
+    })
+    .catch((error: unknown) => {
+      console.debug("Failed to check for updates:", error);
+    });
 }
 
 export function createFramedMessage(messageLines: string[]): string {

@@ -10,6 +10,7 @@ export function generateMockAuthSession(
   const clientSecret = generateUniqueId("auth_sess_client_secret");
   return {
     id: generateUniqueId("auth_sess"),
+    objectType: "auth_session",
     endUserId: generateUniqueId("end_usr"),
     clientSecret,
     authFlowUrl: `https://conductor.is/qbd/${clientSecret}?key=${generateUniqueId(
