@@ -30,17 +30,17 @@
   "scripts": {
     "clean": "rm -rf dist package conductor-node-*.tgz tsconfig.tsbuildinfo",
     "delete-compiled-dev-files": "rm -rf `find ./dist -type d -name __tests__` ./dist/src/utils/test/*",
-    "diff": "yarn pack && npm diff --diff=conductor-node@latest --diff=conductor-node-v$(node -p \"require('./package.json').version\").tgz && yarn clean",
-    "prepack": "yarn --silent tsc && yarn --silent delete-compiled-dev-files && yarn --silent tsc-alias",
+    "diff": "pnpm pack && npm diff --diff=conductor-node@latest --diff=conductor-node-$(node -p \"require('./package.json').version\").tgz && pnpm clean",
+    "prepack": "pnpm tsc && pnpm delete-compiled-dev-files && pnpm tsc-alias",
     "postpack": "rm -rf dist",
-    "prepublishOnly": "yarn jest"
+    "prepublishOnly": "pnpm jest"
   },
   "dependencies": {
-    "axios": "^1.4.0"
+    "axios": "^1.6.8"
   },
   "devDependencies": {
-    "axios-mock-adapter": "^1.21.4",
-    "tsc-alias": "^1.7.0"
+    "axios-mock-adapter": "^1.22.0",
+    "tsc-alias": "^1.8.8"
   },
   "engines": {
     "node": ">=16"

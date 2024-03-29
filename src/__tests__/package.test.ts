@@ -7,15 +7,32 @@ import path from "node:path";
 
 describe("package", () => {
   const clientPackagePath = "./packages/client-node/";
-  const packageFilePath = generateTempFilePath("package", ".tgz");
+  const packageParentDir = os.tmpdir();
+  // `pnpm pack` creates a tarball with the format `{name}-{version}.tgz`.
+  const packageFilePath = path.join(
+    packageParentDir,
+    `${packageJson.name}-${packageJson.version}.tgz`,
+  );
 
   beforeAll(() => {
-    // Automatically runs `yarn postpack` after `yarn pack`.
+    // Run `tsc` first with `stdout` to catch TypeScript errors, which are
+    // output to `stdout` instead of `stderr`. We run this separately instead of
+    // relying on the next command, `pnpm pack`, which also runs `tsc`, because
+    // we must run `pnpm pack` with only `stderr` instead of `stdout` (i.e.,
+    // suppressing any TypeScript errors) to prevent `pnpm` from echoing the
+    // commands for `prepack` and `postpack`, which we cannot silence with
+    // `pnpm`. This echoing looks especially bad when running the repo's tests
+    // in aggregate.
+    execSync(`pnpm --dir=${clientPackagePath} tsc`, {
+      stdio: "inherit",
+    });
     execSync(
-      `yarn --cwd=${clientPackagePath} --silent pack --filename=${packageFilePath}`,
-      // Log everything to see TypeScript errors, which are output to stdout
-      // (instead of stderr).
-      { stdio: "inherit" },
+      `pnpm --dir=${clientPackagePath} pack --pack-destination=${packageParentDir}`,
+      // Only log errors to prevent `pnpm` from echoing the commands for
+      // `prepack` and `postpack`, which we cannot silence with `pnpm`.
+      {
+        stdio: ["ignore", "ignore", "inherit"],
+      },
     );
   });
 
@@ -23,7 +40,7 @@ describe("package", () => {
     execSync(`rm -rf ${packageFilePath}`);
   });
 
-  describe("has no dependencies that are linked/local packages (because it would break `yarn add`)", () => {
+  describe("has no dependencies that are linked/local packages (because it would break `npm install`)", () => {
     it("has no dependencies who names includes 'conductor'", () => {
       const localPackages = [
         ...Object.keys(packageJson.dependencies),
@@ -33,7 +50,7 @@ describe("package", () => {
     });
   });
 
-  it("yarn pack creates tarball", () => {
+  it("pnpm pack creates tarball", () => {
     expect(fs.existsSync(packageFilePath)).toBe(true);
   });
 
@@ -121,42 +138,46 @@ describe("package", () => {
   });
 
   describe("install and load package", () => {
-    describe.each(["yarn add", "npm install"])("%s", (installCommand) => {
-      const installDir = fs.mkdtempSync(`${os.tmpdir()}/test-install-`);
+    describe.each(["npm install", "yarn add", "pnpm add"])(
+      "%s",
+      (installCommand) => {
+        const installDir = fs.mkdtempSync(`${os.tmpdir()}/test-install-`);
 
-      beforeAll(() => {
-        execSync(`${installCommand} ${packageFilePath}`, { cwd: installDir });
-      });
+        beforeAll(() => {
+          execSync(`${installCommand} ${packageFilePath}`, { cwd: installDir });
+        });
 
-      afterAll(() => {
-        execSync(`rm -rf ${installDir}`);
-      });
+        afterAll(() => {
+          execSync(`rm -rf ${installDir}`);
+        });
 
-      it("installs the package", () => {
-        const packageJsonPath = path.join(
-          installDir,
-          "node_modules",
-          packageJson.name,
-          "package.json",
-        );
-        const installedPackageJson = JSON.parse(
-          fs.readFileSync(packageJsonPath).toString(),
-        ) as typeof packageJson;
-        expect(installedPackageJson.name).toBe(packageJson.name);
-        expect(installedPackageJson.name).toBe("conductor-node");
-        expect(installedPackageJson.version).toBe(packageJson.version);
-      });
+        it("installs the package", () => {
+          const packageJsonPath = path.join(
+            installDir,
+            "node_modules",
+            packageJson.name,
+            "package.json",
+          );
+          const installedPackageJson = JSON.parse(
+            fs.readFileSync(packageJsonPath).toString(),
+          ) as typeof packageJson;
+          expect(installedPackageJson.name).toBe(packageJson.name);
+          expect(installedPackageJson.name).toBe("conductor-node");
+          expect(installedPackageJson.version).toBe(packageJson.version);
+        });
 
-      describe("imports and instantiates the client, error subclasses, and types", () => {
-        describe("TypeScript", () => {
-          // Run all checks within a single `ts-node --eval` call, instead of
-          // splitting them into multiple `it` blocks, because each additional
-          // `ts-node --eval` call adds ~1 second to the test suite.
-          describe("module", () => {
-            it.each([true, false])("esModuleInterop=%s", (esModuleInterop) => {
-              expect(() =>
-                execSync(
-                  `npx ts-node --compilerOptions '{"esModuleInterop":${esModuleInterop}}' --eval="
+        describe("imports and instantiates the client, error subclasses, and types", () => {
+          describe("TypeScript", () => {
+            // Run all checks within a single `ts-node --eval` call, instead of
+            // splitting them into multiple `it` blocks, because each additional
+            // `ts-node --eval` call adds ~1 second to the test suite.
+            describe("module", () => {
+              it.each([true, false])(
+                "esModuleInterop=%s",
+                (esModuleInterop) => {
+                  expect(() =>
+                    execSync(
+                      `npx ts-node --compilerOptions '{"esModuleInterop":${esModuleInterop}}' --eval="
                   // Imports and instantiates a Client in TypeScript.
                   import Conductor from 'conductor-node';
                   const conductor = new Conductor('mock-api-key');
@@ -175,21 +196,22 @@ describe("package", () => {
                   const defaultAccountType: QbdTypes.AccountType = 'Bank';
                   console.log(defaultAccountType);
                 "`
-                    // Remove the comments because `ts-node --eval` ignores the
-                    // line breaks and thinks the leading "//" on the first line
-                    // applies to the entire block.
-                    .replaceAll(/\/\/.*\n/g, "")
-                    .replaceAll(/\n +/g, " "),
-                  { cwd: installDir },
-                ),
-              ).not.toThrow();
+                        // Remove the comments because `ts-node --eval` ignores the
+                        // line breaks and thinks the leading "//" on the first line
+                        // applies to the entire block.
+                        .replaceAll(/\/\/.*\n/g, "")
+                        .replaceAll(/\n +/g, " "),
+                      { cwd: installDir },
+                    ),
+                  ).not.toThrow();
+                },
+              );
             });
-          });
 
-          it("commonjs", () => {
-            expect(() =>
-              execSync(
-                `npx ts-node --eval="
+            it("commonjs", () => {
+              expect(() =>
+                execSync(
+                  `npx ts-node --eval="
                   // Imports and instantiates a Client in TypeScript.
                   const Conductor = require('conductor-node');
                   const conductor = new Conductor('mock-api-key');
@@ -208,22 +230,22 @@ describe("package", () => {
                   const defaultAccountType: QbdTypes.AccountType = 'Bank';
                   console.log(defaultAccountType);
                 "`
-                  // Remove the comments because `ts-node --eval` ignores the
-                  // line breaks and thinks the leading "//" on the first line
-                  // applies to the entire block.
-                  .replaceAll(/\/\/.*\n/g, "")
-                  .replaceAll(/\n +/g, " "),
-                { cwd: installDir },
-              ),
-            ).not.toThrow();
+                    // Remove the comments because `ts-node --eval` ignores the
+                    // line breaks and thinks the leading "//" on the first line
+                    // applies to the entire block.
+                    .replaceAll(/\/\/.*\n/g, "")
+                    .replaceAll(/\n +/g, " "),
+                  { cwd: installDir },
+                ),
+              ).not.toThrow();
+            });
           });
-        });
 
-        describe("JavaScript", () => {
-          it("module", () => {
-            expect(() =>
-              execSync(
-                `node --input-type=module --eval="
+          describe("JavaScript", () => {
+            it("module", () => {
+              expect(() =>
+                execSync(
+                  `node --input-type=module --eval="
                   // Imports and instantiates a Client in javascript ESM.
                   import Conductor from 'conductor-node';
                   const conductor = new Conductor('mock-api-key');
@@ -237,15 +259,15 @@ describe("package", () => {
                   });
                   console.log(integrationError);
                 "`,
-                { cwd: installDir },
-              ),
-            ).not.toThrow();
-          });
+                  { cwd: installDir },
+                ),
+              ).not.toThrow();
+            });
 
-          it("commonjs", () => {
-            expect(() =>
-              execSync(
-                `node --input-type=commonjs --eval="
+            it("commonjs", () => {
+              expect(() =>
+                execSync(
+                  `node --input-type=commonjs --eval="
                   // Imports and instantiates a Client in javascript CommonJS.
                   const Conductor = require('conductor-node');
                   const conductor = new Conductor('mock-api-key');
@@ -259,12 +281,13 @@ describe("package", () => {
                   });
                   console.log(integrationError);
                 "`,
-                { cwd: installDir },
-              ),
-            ).not.toThrow();
+                  { cwd: installDir },
+                ),
+              ).not.toThrow();
+            });
           });
         });
-      });
-    });
+      },
+    );
   });
 });

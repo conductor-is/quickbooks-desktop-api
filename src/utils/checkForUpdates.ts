@@ -3,7 +3,8 @@ import { isEnvironmentVariableTruthy } from "@conductor/client-node/utils/env";
 import axios from "axios";
 
 export function checkForUpdates(): void {
-  if (process.env.NODE_ENV === "test") {
+  // eslint-disable-next-line @typescript-eslint/dot-notation -- ESLint is incorrectly following the global type modification that `next` makes in other packages of this monorepo where it is a dependency. TypeScript correctly limits the scope of this `next` type modification to only the packages where `next` is a dependency. ESLint does not; hence, we disable this rule here.
+  if (process.env["NODE_ENV"] === "test") {
     return;
   }
 
@@ -24,10 +25,13 @@ export function checkForUpdates(): void {
       const latestVersion = response.data.latest;
 
       if (currentVersion !== latestVersion) {
-        const updateCommand =
-          process.env["npm_execpath"]?.includes("yarn") === true
-            ? "yarn add"
-            : "npm install";
+        let updateCommand = "npm install";
+        if (process.env["npm_execpath"]?.includes("yarn") === true) {
+          updateCommand = "yarn add";
+        } else if (process.env["npm_execpath"]?.includes("pnpm") === true) {
+          updateCommand = "pnpm add";
+        }
+        console.log("updateCommand", updateCommand);
 
         console.warn(
           createFramedMessage([

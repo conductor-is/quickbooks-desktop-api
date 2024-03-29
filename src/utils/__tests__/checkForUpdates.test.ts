@@ -76,6 +76,7 @@ describe("checkForUpdates", () => {
     it.each([
       ["path/to/npm", "npm install"],
       ["path/to/yarn", "yarn add"],
+      ["path/to/pnpm", "pnpm add"],
     ])("when using %s", async (packageManagerPath, updateCommand) => {
       expect.assertions(1);
       const currentVersion = "1.0.0";
