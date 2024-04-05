@@ -377,6 +377,52 @@ export type AdjustBillingRateRelativeTo = "CurrentCustomRate" | "StandardRate";
 
 export type AdjustRelativeTo = "Cost" | "CurrentCustomPrice" | "StandardPrice";
 
+export interface AgingReportQueryRq {
+  /** The type of aging report being queried. */
+  AgingReportType: AgingReportType;
+  /** Set `DisplayReport` to true to display this report within the QuickBooks UI. (Default is false.) If you want the request to display the report without returning any data to your application, set the `responseData` attribute to `includeNone`. */
+  DisplayReport?: boolean;
+  /** If you omit both `ToReportDate` and `FromReportDate`, the report will cover the current fiscal year to date. */
+  ReportPeriod?: ReportPeriod;
+  /** The time period covered by this report. */
+  ReportDateMacro?: ReportDateMacro;
+  /** Allows you to query for a specified account type or for specific list elements. */
+  ReportAccountFilter?: ReportAccountFilter;
+  /** Allows you to query for a specified name type (customer, employee, vendor, or other) or query for specific list elements. */
+  ReportEntityFilter?: ReportEntityFilter;
+  /** Allows you to query for a specified item type (for example, discount, inventory, or non-inventory) or query for specific list elements. */
+  ReportItemFilter?: ReportItemFilter;
+  /** Allows you to query for a specified class. Classes can be used to separate transactions into meaningful categories. (For example, transactions could be classified according to department, business location, or type of work.) In QuickBooks, class tracking is off by default. */
+  ReportClassFilter?: ReportClassFilter;
+  /** Allows you to report on specific transaction types (for example, charge, check, deposit, or estimate). */
+  ReportTxnTypeFilter?: ReportTxnTypeFilter;
+  /** Returns reports that were modified between these two dates (inclusive). The range of acceptable dates for both `FromReportModifiedDate` and `ToReportModifiedDate` is 1970-01-01 to 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST). */
+  ReportModifiedDateRangeFilter?: ReportModifiedDateRangeFilter;
+  /** The time period covered by this report. */
+  ReportModifiedDateRangeMacro?: ReportModifiedDateRangeMacro;
+  /** The level of detail to include in the report. */
+  ReportDetailLevelFilter?: ReportDetailLevelFilter;
+  /** Allows you to query for posting reports, non-posting reports, or reports that are either one. */
+  ReportPostingStatusFilter?: ReportPostingStatusFilter;
+  /** A list of enum values showing which columns you want the report to return. (The report won’t return columns other than the ones you specify here.) */
+  IncludeColumn?: IncludeColumn | IncludeColumn[];
+  /** Indicates whether this report should include all accounts or just those that are currently in use. */
+  IncludeAccounts?: IncludeAccounts;
+  /** The report will return aging information up to the `ReportAgingAsOf` date. */
+  ReportAgingAsOf?: ReportAgingAsOf;
+}
+
+export interface AgingReportQueryRs {
+  ReportRet: ReportRet[];
+}
+
+export type AgingReportType =
+  | "APAgingDetail"
+  | "APAgingSummary"
+  | "ARAgingDetail"
+  | "ARAgingSummary"
+  | "CollectionsReport";
+
 export interface APAccountRef {
   /** Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
   ListID?: string;
@@ -11206,6 +11252,9 @@ export interface ReportAccountFilter {
   FullNameWithChildren?: string;
 }
 
+/** @default: ReportEndDate */
+export type ReportAgingAsOf = "ReportEndDate" | "Today";
+
 /** @default: None */
 export type ReportBasis = "Accrual" | "Cash" | "None";
 
@@ -11229,7 +11278,9 @@ export interface ReportData {
   TextRow?: TextRow | TextRow[];
   /** A row that contains a calculated subtotal of the data in all the rows since the last `SubTotalRow` and, usually, a single underline. There can be multiple `SubTotalRow` aggregates in a report. */
   SubtotalRow?: SubtotalRow | SubtotalRow[];
-  /** A row that contains a calculated total of all the data that has come before and a double underline. There will only be one `TotalRow` per report. If `TotalRow` does not include any numerical values, the columns required to show the total values are not part of the report. These columns were not included when the report was customized. */
+  /** A row that contains a calculated total of all the data that has come before and a double underline. There will only be one `TotalRow` per report.
+
+  If `TotalRow` does not include any numerical values, the columns required to show the total values are not part of the report. These columns were not included when the report was customized. */
   TotalRow?: TotalRow;
 }
 
@@ -11284,7 +11335,9 @@ export type ReportingPeriod = "Monthly" | "Quarterly";
 export interface ReportItemFilter {
   /** Allows you to report on a specific item type. */
   ItemTypeFilter?: ItemTypeFilter;
-  /** One or more `ListID` values. Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  /** One or more `ListID` values. Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`.
+
+  A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
   ListID?: string[] | string;
   /** A list of one or more `FullName` values. `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
   FullName?: string[] | string;
@@ -11331,7 +11384,9 @@ export type ReportModifiedDateRangeMacro =
 export type ReportOpenBalanceAsOf = "ReportEndDate" | "Today";
 
 export interface ReportPeriod {
-  /** Selects information from this date and later. The range of acceptable `FromReportDate` and `ToReportDate` values depends on how the report dates are determined. If the report dates are based on the dates of transactions, the range is 01/01/1901 to 12/31/9999. If the report dates are based on modification dates, the range will be 1970-01-01 to 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST). If you omit `FromReportDate`, it will be set to 1970-01-01T00:00:00 (1969-12-31T16:00:00-08:00 PST). */
+  /** Selects information from this date and later. The range of acceptable `FromReportDate` and `ToReportDate` values depends on how the report dates are determined. If the report dates are based on the dates of transactions, the range is 01/01/1901 to 12/31/9999. If the report dates are based on modification dates, the range will be 1970-01-01 to 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST).
+
+  If you omit `FromReportDate`, it will be set to 1970-01-01T00:00:00 (1969-12-31T16:00:00-08:00 PST). */
   FromReportDate?: string;
   /** Selects information created on this date or earlier. The range of acceptable `ToReportDate` and `FromReportDate` values depends on how the report dates are determined. If the report dates are based on the dates of transactions, the range is 01/01/1901 to 12/31/9999. If the report dates are based on modification dates, the range will be 1970-01-01 to 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST). If you omit `ToReportDate`, it will be set to 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST). */
   ToReportDate?: string;
@@ -11344,7 +11399,9 @@ export interface ReportRet {
   ReportTitle: string;
   /** The subtitle for this report. */
   ReportSubtitle: string;
-  /** If `ReportBasis` is `rbCash`, the report bases income and expenses on the dates when money changed hands.`rbAccrual`, the report bases income on the dates when customers were invoiced and bases expenses on the dates when bills were entered.`rbNone`, the report uses the default `ReportBasis`, which is either the QuickBooks Preference setting or the QuickBooks default for a given type of report. In a report response, the SDK returns `rbNone` for reports that do not support `ReportBasis`. (The 1099 report, for example, has its own basis for generation.) */
+  /** If `ReportBasis` is
+
+  `rbCash`, the report bases income and expenses on the dates when money changed hands. `rbAccrual`, the report bases income on the dates when customers were invoiced and bases expenses on the dates when bills were entered. `rbNone`, the report uses the default `ReportBasis`, which is either the QuickBooks Preference setting or the QuickBooks default for a given type of report. In a report response, the SDK returns `rbNone` for reports that do not support `ReportBasis`. (The 1099 report, for example, has its own basis for generation.) */
   ReportBasis?: ReportBasis;
   /** The number of rows in the report. */
   NumRows: number;
@@ -11368,7 +11425,55 @@ export type ReturnColumns = "ActiveOnly" | "All" | "NonZero";
 export type ReturnRows = "ActiveOnly" | "All" | "NonZero";
 
 export interface RowData {
-  /** An enumerated value that shows the type of data that this row contains. Values: account class customer `customerMessage` `customerType` employee item `jobType` label `memorizedTxn` `memorizedReport` name `otherName` `paymentMethod` `payrollItem` `salesRep` `salesTaxCode` `shipMethod` state style terms `toDo` vendor `vendorType` */
+  /** An enumerated value that shows the type of data that this row contains. Values:
+
+  account
+
+  class
+
+  customer
+
+  `customerMessage`
+
+  `customerType`
+
+  employee
+
+  item
+
+  `jobType`
+
+  label
+
+  `memorizedTxn`
+
+  `memorizedReport`
+
+  name
+
+  `otherName`
+
+  `paymentMethod`
+
+  `payrollItem`
+
+  `salesRep`
+
+  `salesTaxCode`
+
+  `shipMethod`
+
+  state
+
+  style
+
+  terms
+
+  `toDo`
+
+  vendor
+
+  `vendorType` */
   RowType: RowType;
   /** The data in this cell of the report. */
   Value: string;
@@ -13458,8 +13563,260 @@ export interface TotalRow {
   ColData?: ColData | ColData[];
 }
 
+export interface TransactionAccountFilter {
+  /** Allows you to report on a specific account type. */
+  AccountTypeFilter?: AccountTypeFilter;
+  /** One or more `ListID` values. Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`.
+
+  A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID?: string[] | string;
+  /** A list of one or more `FullName` values. `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
+  FullName?: string[] | string;
+  /** Allows you to filter for data that relates to the specified object and its descendants. */
+  ListIDWithChildren?: string;
+  /** Allows you to filter for data that relates to the specified object and its descendants. For names that do not have children, `FullNameWithChildren` is exactly the same as `FullName`. */
+  FullNameWithChildren?: string;
+}
+
+export interface TransactionClassFilter {
+  /** One or more `ListID` values. Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`.
+
+  A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID?: string[] | string;
+  /** A list of one or more `FullName` values. `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
+  FullName?: string[] | string;
+  /** Allows you to filter for data that relates to the specified object and its descendants. */
+  ListIDWithChildren?: string;
+  /** Allows you to filter for data that relates to the specified object and its descendants. For names that do not have children, `FullNameWithChildren` is exactly the same as `FullName`. */
+  FullNameWithChildren?: string;
+}
+
+export interface TransactionDateRangeFilter {
+  /** Selects transactions created on or after this date. Both `FromTxnDate` and `ToTxnDate` must be between 01/01/1901 and 12/31/9999.
+
+  If you omit `FromTxnDate`, it will be set to 1970-01-01 (1969-12-31 PST). */
+  FromTxnDate?: string;
+  /** Selects transactions created on or before this date. Both `ToTxnDate` and `FromTxnDate` must be between 01/01/1901 and 12/31/9999. If you omit `ToTxnDate`, it will be set to 2038-01-19 (2038-01-18 PST). */
+  ToTxnDate?: string;
+  /** Refers to the transaction date, not the last modification date. Do not include `DateMacro` if either `FromModifedDate` or `ToModifiedDate` are specified. If a query does not specify `DateMacro`, `FromModifedDate`, or `ToModifiedDate`, it includes all dates.
+
+  `DateMacro` values, in alphabetical order, that are new with QBFC3:
+
+  `dmAll`, `dmdmLastCalendarQuarter`, `dmdmLastCalendarQuarterToDate`, `dmdmLastCalendarYear`, `dmdmLastCalendarYearToDate`, `dmLastFiscalQuarterToDate`, `dmLastFiscalYearToDate`, `dmLastMonthToDate`, `dmLastWeekToDate`, `dmNextCalendarQuarter`, `dmNextCalendarYear`, `dmNextFiscalQuarter`, `dmNextFiscalYear`, `dmNextFourWeeks`, `dmNextMonth`, `dmNextWeek`, `dmThisCalendarQuarter`, `dmThisCalendarQuarterToDate`, `dmThisCalendarYear`, dm `ThisCalendarYearToDate`, `dmThisFiscalQuarter`, `dmThisFiscalYear`, `dmThisMonth`, `dmThisWeek`, `dmThisWeekToDate`, `dmToday`, `dmYesterday`
+
+  The list given when you click `IQBENDateMacroType` shows the complete list of valid version 3.0 values. */
+  DateMacro?: DateMacro;
+}
+
+/** @default: SummaryOnly */
+export type TransactionDetailLevelFilter =
+  | "All"
+  | "AllExceptSummary"
+  | "SummaryOnly";
+
+export interface TransactionEntityFilter {
+  /** Allows you to report on a specific name type. */
+  EntityTypeFilter?: EntityTypeFilter;
+  /** One or more `ListID` values. Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`.
+
+  A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID?: string[] | string;
+  /** A list of one or more `FullName` values. `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
+  FullName?: string[] | string;
+  /** Allows you to filter for data that relates to the specified object and its descendants. */
+  ListIDWithChildren?: string;
+  /** Allows you to filter for data that relates to the specified object and its descendants. For names that do not have children, `FullNameWithChildren` is exactly the same as `FullName`. */
+  FullNameWithChildren?: string;
+}
+
+export interface TransactionItemFilter {
+  /** Allows you to report on a specific item type. */
+  ItemTypeFilter?: ItemTypeFilter;
+  /** One or more `ListID` values. Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`.
+
+  A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID?: string[] | string;
+  /** A list of one or more `FullName` values. `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
+  FullName?: string[] | string;
+  /** Allows you to filter for data that relates to the specified object and its descendants. */
+  ListIDWithChildren?: string;
+  /** Allows you to filter for data that relates to the specified object and its descendants. For names that do not have children, `FullNameWithChildren` is exactly the same as `FullName`. */
+  FullNameWithChildren?: string;
+}
+
 /** @default: CardNotPresent */
 export type TransactionMode = "CardNotPresent" | "CardPresent";
+
+export interface TransactionModifiedDateRangeFilter {
+  /** Selects objects modified on or after this date. See the note below regarding QBFC usage.
+
+  For desktop versions of QuickBooks, the `FromModifiedDate` and `ToModifiedDate` must be between 1970-01-01 and 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST). (The time portion of the field was not supported in qbXML version 1.0 or 1.1.) Also, for desktop versions of QuickBooks, if `FromModifiedDate` includes a date but not a time (for example, if you set `FromModifiedDate` to 2003-02-14), the time is assumed to be zero (2003-02-14T00:00:00). If you omit `FromModifiedDate`, it will be set to 1970-01-01T00:00:00 (1969-12-31T16:00:00-08:00 PST).
+
+  For QBOE, the `FromModifiedDate` and `ToModifiedDate` must be between 1900-01-01T00:00:00 and 9999-12-31T00:00:00. If `FromModifiedDate` includes a date but not a time (for example, if you set `FromModifiedDate` to 2003-02-14), the time is assumed to be zero (2003-02-14T00:00:00). If you omit `FromModifiedDate`, it will be set to 1900-01-01T00:00:00.
+
+  Note: When specifying this in QBFC, you need to supply the parameter `asDateOnly`, which is a Boolean. If `asDateOnly` is true, the date value will be represented as a date only (without a time). If `asDateOnly` is false, the date value will be represented as date and time, padded with zeros if necessary, and set to the beginning of the day if no time is provided. The `asDateOnly` parameter is especially useful in the `ToModifiedDate` field of a query: If `asDateOnly` is set to true in the `ToModifiedDate` field of a query, then the query includes elements modified up to the end of the day. If `asDateOnly` is false, the query includes elements modified up to the specified time (or up to the beginning of the day if no time is included). */
+  FromModifiedDate?: string;
+  /** Selects objects modified on or before this date. See the note below on QBFC usage.
+
+  For desktop versions of QuickBooks, the `ToModifiedDate` and `FromModifiedDate` must be between 01/01/1970 and 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST). (Note that the time portion of the field was not supported in qbXML version 1.0 or 1.1.) If `ToModifiedDate` includes a date but not a time (for example, if you set `ToModifiedDate` to 2003-02-14), the time is assumed to be the end of the day (2003-02-14T23:59:59). If you omit `ToModifiedDate` altogether, it will be set to 2038-01-19T03:14:07 (2038-01-18T19:14:07-08:00 PST).
+
+  For QBOE, the `ToModifiedDate` and `FromModifiedDate` must be between 01/01/1900 and 9999-12-31T00:00:00. If `ToModifiedDate` includes a date but not a time (for example, if you set `ToModifiedDate` to 2003-02-14), the time is assumed to be the end of the day (2003-02-14T23:59:59). If you omit `ToModifiedDate` altogether, it will be set to 9999-12-31T00:00:00.
+
+  Note: When specifying this in QBFC, you need to supply the parameter `asDateOnly`, which is a Boolean. If `asDateOnly` is true, the date value will be represented as a date only (without a time). If `asDateOnly` is false, the date value will be represented as date and time, padded with zeros if necessary, and set to the beginning of the day if no time is provided. The `asDateOnly` parameter is especially useful in the `ToModifiedDate` field of a query: If `asDateOnly` is set to true in the `ToModifiedDate` field of a query, then the query includes elements modified up to the end of the day. If `asDateOnly` is false, the query includes elements modified up to the specified time (or up to the beginning of the day if no time is included). */
+  ToModifiedDate?: string;
+  /** Refers to the transaction date, not the last modification date. Do not include `DateMacro` if either `FromModifedDate` or `ToModifiedDate` are specified. If a query does not specify `DateMacro`, `FromModifedDate`, or `ToModifiedDate`, it includes all dates.
+
+  `DateMacro` values, in alphabetical order, that are new with QBFC3:
+
+  `dmAll`, `dmdmLastCalendarQuarter`, `dmdmLastCalendarQuarterToDate`, `dmdmLastCalendarYear`, `dmdmLastCalendarYearToDate`, `dmLastFiscalQuarterToDate`, `dmLastFiscalYearToDate`, `dmLastMonthToDate`, `dmLastWeekToDate`, `dmNextCalendarQuarter`, `dmNextCalendarYear`, `dmNextFiscalQuarter`, `dmNextFiscalYear`, `dmNextFourWeeks`, `dmNextMonth`, `dmNextWeek`, `dmThisCalendarQuarter`, `dmThisCalendarQuarterToDate`, `dmThisCalendarYear`, dm `ThisCalendarYearToDate`, `dmThisFiscalQuarter`, `dmThisFiscalYear`, `dmThisMonth`, `dmThisWeek`, `dmThisWeekToDate`, `dmToday`, `dmYesterday`
+
+  The list given when you click `IQBENDateMacroType` shows the complete list of valid version 3.0 values. */
+  DateMacro?: DateMacro;
+}
+
+/** @default: Either */
+export type TransactionPaidStatusFilter = "Closed" | "Either" | "Open";
+
+/** @default: Either */
+export type TransactionPostingStatusFilter =
+  | "Either"
+  | "NonPosting"
+  | "Posting";
+
+export interface TransactionQueryRq {
+  /** One or more `TxnID` values. QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks.
+
+  Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQuery` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID?: string[] | string;
+  /** Limits the number of objects that a query returns. (To get a count of how many objects could possibly be returned, use the `metaData` query attribute.) If you include a `MaxReturned` value, it must be at least 1. */
+  MaxReturned?: number;
+  /** A list of one or more `RefNumber` values. A `RefNumber` is a string of characters that refers to a transaction and that can be arbitrarily changed by the QuickBooks user.
+
+  Note (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request, the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
+  RefNumber?: string[] | string;
+  /** A list of one or more case sensitive `RefNumber` values. A `RefNumber` is a string of characters that refers to a transaction and that can be arbitrarily changed by the QuickBooks user.
+
+  You should use this case sensitive ref number list rather than the older `RefNumber` list, because it provides much better performance in certain circumstances. The older `refNumber` list provided slow performance if the `refNumber` values contained letters, not just digits. This `RefNumberCaseSensitive` list, new in SDK 4.0, eliminates this performance hit. */
+  RefNumberCaseSensitive?: string[] | string;
+  /** Filters according to `RefNumber`. */
+  RefNumberFilter?: RefNumberFilter;
+  /** Filters according to `RefNumber`. The filtering code will do a numerical comparison (if `FromRefNumber` and `ToRefNumber` only contain digits) or a lexicographical comparison (if either `FromRefNumber` or `ToRefNumber` contain any nondigit characters). In the first situation, if you need to query for a `RefNumber` that is larger than the maximum long integer value of 2147483647, one workaround is to specify a `FromRefNumber` that is less than or equal to 2147483647 without specifying a `ToRefNumber`. */
+  RefNumberRangeFilter?: RefNumberRangeFilter;
+  /** Filters the transactions based on the transaction’s modified datetime, either by specifying a “from” and/or “to” date or by using a `DateMacro`. */
+  TransactionModifiedDateRangeFilter?: TransactionModifiedDateRangeFilter;
+  /** Filters the transactions based on the transaction’s date either by specifying a “from” and/or “to” date, or by using a `DateMacro`. */
+  TransactionDateRangeFilter?: TransactionDateRangeFilter;
+  /** Filters the transactions based on the `EntityRef` used in the transaction or transaction line by specifying an entity type filter, a `ListID`, a `FullName`, a `ListIDWithChildren`, or a `FullNameWithChildren`.
+
+  If you want to filter on transaction lines you must specify the `TransactionDetailLevelFilter` with a value of either “All” or “`AllExceptSummary`”. */
+  TransactionEntityFilter?: TransactionEntityFilter;
+  /** Filters the transactions based on the `AccountRef` in the transaction or transaction line using an account type filter or a specific `ListID`, or a `FullName`, or a `ListIDWithChildren`, or a `FullNameWithChildren`.
+
+  To filter on transaction lines, you must specify the `TransactionDetailLevelFilter` with a value of either “All” or “`AllExceptSummary`”. */
+  TransactionAccountFilter?: TransactionAccountFilter;
+  /** Filters the transactions based on the `ItemRef` used in the transaction line using an item type filter, or a specific `ListID`, or a `FullName`, or a `ListIDWithChildren`, or a `FullNameWithChildren`.
+
+  To filter on transaction lines, you must specify the `TransactionDetailLevelFilter` with a value of either “All” or “`AllExceptSummary`”. */
+  TransactionItemFilter?: TransactionItemFilter;
+  /** Filters the transactions based on the `ClassRef` in the transaction or transaction line by using a specific `ListID`, or a `FullName`, or a `ListIDWithChildren`, or a `FullNameWithChildren`.
+
+  To filter on transaction lines, you must specify the `TransactionDetailLevelFilter` with a value of either “All” or “`AllExceptSummary`”. */
+  TransactionClassFilter?: TransactionClassFilter;
+  /** Filters the transactions based on the transaction’s type. You can specify one or more transaction types in the filter. Notice that `TimeTracking` transactions are not supported.
+
+  If you set the transaction type filter to “All” (or if you don’t set it at all), the query will be searching only those transaction types that are permissible types for the user currently logged in. If instead of “all,” you specify a transaction type that the currently logged in user is not permitted to access, you will get a runtime error, even if other permissible transaction types were specified as well. */
+  TransactionTypeFilter?: TransactionTypeFilter;
+  /** Allows you to specify the detail level of the query results. You can specify all, summary only (the default), or all except summary. Summary only refers to the transaction as a whole, whereas all except summary refers to the transaction lines. */
+  TransactionDetailLevelFilter?: TransactionDetailLevelFilter;
+  /** Allows you to filter transactions based on posting status. Valid values are posting, non-posting, or either. The default is “either.” (Posting status refers to whether QuickBooks records a transaction in one of your account registers.) */
+  TransactionPostingStatusFilter?: TransactionPostingStatusFilter;
+  /** This filter allows you to search for “open” transactions, i.e. transactions with a remaining balance (for example, credits not fully applied or invoices not fully paid). Valid values are closed, open, or either, which is the default. */
+  TransactionPaidStatusFilter?: TransactionPaidStatusFilter;
+  /** Filters by the specified currency. */
+  CurrencyFilter?: CurrencyFilter;
+  /** You use this if you want to limit the data that will be returned in the response. In this list, you specify the name of each top-level element or aggregate that you want to be returned in the response to the request. You cannot specify fields within an aggregate, for example, you cannot specify a `City` within an `Address`: you must specify `Address` and will get the entire address.
+
+  The names specified in the list are not parsed, so you must be especially careful to supply valid names, properly cased. No error is returned in the status code if you specify an invalid name.
+
+  Notice that if you want to return custom data or private data extensions, you must specify the `DataExtRet` element and you must supply the `OwnerID` set to either a value of 0 (custom data) or the GUID for the private data. */
+  IncludeRetElement?: string[] | string;
+}
+
+export interface TransactionQueryRs {
+  TransactionRet: TransactionRet[];
+}
+
+export interface TransactionRet {
+  /** The type of transaction. */
+  TxnType?: TxnType;
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests.
+
+  Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID?: string;
+  /** Identification number of the transaction line. (`TxnLineID` is supported as of v2.0 of the SDK. With qbXML v1.0 and v1.1, `TxnLineID` is always returned as zero.)
+
+  If you need to add a new transaction line in a transaction Mod request, you can do so by setting the `TxnLineID` to -1. */
+  TxnLineID?: string;
+  /** Time the object was created. */
+  TimeCreated?: string;
+  /** Time the object was last modified. */
+  TimeModified?: string;
+  /** A QuickBooks “entity” is a customer, vendor, employee, or person on the QuickBooks “other names” list.
+
+  Special cases to note: In a `BillToPayQuery` message, `EntityRef` refers to the vendor name. In `JournalCreditLine` and `JournalDebitLine` messages for A/R accounts, `EntityRef` must refer to a customer, or else the transaction will not be recorded. For A/P accounts the `EntityRef` must refer to a vendor, or else the transaction will not be recorded. In a `TimeTracking` message, `EntityRef` cannot refer to a customer, only to an employee, vendor, or person on the “other names” list whose time is being tracked. */
+  EntityRef?: EntityRef;
+  /** The Account list is the company file’s list of accounts. An `AccountRef` aggregate refers to one of these accounts. (If an `AccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.)
+
+  Special cases to note: In a Check message, `AccountRef` refers to the account from which the funds are being drawn for this check, for example, Checking or Savings. In an `ExpenseLineAdd` message, you must include `AccountRef` if the “Require accounts” check box is selected in the QuickBooks Accounting preferences. (It is selected by default.) In a `CreditCardCredit` message, `AccountRef` refers to the bank account or credit card account to which the credit is applied. In a `CreditCardCharge` message, `AccountRef` refers to the bank or credit card company to whom money is owed.
+
+  How do you increase and decrease amounts in bank accounts?
+
+  The following requests increase the balance in a bank account:
+
+  Deposit Add
+
+  `ReceivePaymentAdd`
+
+  Journal Entry Add
+
+  Sales `ReceiptAdd`
+
+  The following requests decrease the balance in a bank account:
+
+  `CheckAdd`
+
+  Bill `PaymentCheckAdd`
+
+  `JournalEntryAdd` */
+  AccountRef?: AccountRef;
+  /** The date of the transaction. In some cases, if you leave `TxnDate` out of an -Add message, QuickBooks will prefill `TxnDate` with the date of the last-saved transaction of the same type. */
+  TxnDate?: string;
+  /** A string of characters that refers to this transaction and that can be arbitrarily changed by the QuickBooks user.
+
+  In a `BillPaymentCheckAdd` request, if you want to set the check number, use `RefNumber`.
+
+  Note (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request (that is, or ), the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
+  RefNumber?: string;
+  /** A monetary amount. */
+  Amount?: string;
+  /** The currency object contains all of the information needed by QuickBooks to display and use. For built-in currencies, the name and currency code values are internationally accepted values and thus are not editable. The comma format is editable, as is the `IsActive` status. For user-defined currencies, every value in the object is editable including name and currency code.
+
+  When used with `PriceLevels`, the `CurrencyRef` should only be used with “per item” price levels. */
+  CurrencyRef?: CurrencyRef;
+  /** The exchange rate is the market price for which this currency can be exchanged for the currency used by the QuickBooks company file as the “home” currency. The exchange rate should be considered a snapshot of the rates in effect at the `AsOfDate`.
+
+  You can update the exchange rate using the exchange rate property when you add a transaction. However, you need to obtain and supply the exchange rate. If you are using USD (United States Dollars) as the home currency and are connected to the Internet, you can download the current exchange rates for all active currencies automatically in the QuickBooks UI by selecting Lists->Currency->Activities->Download latest exchange rates. (Currently, you can’t do this in the SDK.) */
+  ExchangeRate?: number;
+  /** Amount in units of the home currency. */
+  AmountInHomeCurrency?: string;
+  /** Additional information. */
+  Memo?: string;
+}
+
+export interface TransactionTypeFilter {
+  /** A list of the transaction types you want the report to cover. */
+  TxnTypeFilter: TxnTypeFilter | TxnTypeFilter[];
+}
 
 export interface TransferAdd {
   /** The date of the transaction. In some cases, if you leave `TxnDate` out of an -Add message, QuickBooks will prefill `TxnDate` with the date of the last-saved transaction of the same type. */

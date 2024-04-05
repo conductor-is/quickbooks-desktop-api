@@ -76,7 +76,7 @@ async function main() {
   const endUser = await conductor.endUsers.create({
     sourceId: "{{UNIQUE_ID_FROM_YOUR_DB}}",
     email: "{{END_USER_EMAIL}}",
-    name: "{{END_USER_NAME}}",
+    companyName: "{{END_USER_COMPANY_NAME}}",
   });
   console.log("Save this EndUser ID to auth future requests:", endUser.id);
 

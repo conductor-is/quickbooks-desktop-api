@@ -56,7 +56,7 @@ describe("EndUsersResource", () => {
     const endUser = generateMockEndUser({
       sourceId: endUserCreateInput.sourceId,
       email: endUserCreateInput.email,
-      name: endUserCreateInput.name,
+      companyName: endUserCreateInput.companyName,
     });
     let result: EndUser;
 

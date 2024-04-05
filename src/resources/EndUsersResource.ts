@@ -25,14 +25,17 @@ export interface EndUser {
   /**
    * Your end-user's company name that will be shown elsewhere in Conductor.
    */
-  readonly name: string;
+  readonly companyName: string;
   /**
    * The time at which the object was created.
    */
   readonly createdAt: string;
 }
 
-export type EndUserCreateInput = Pick<EndUser, "email" | "name" | "sourceId">;
+export type EndUserCreateInput = Pick<
+  EndUser,
+  "companyName" | "email" | "sourceId"
+>;
 
 export interface EndUserPingOutput {
   /**

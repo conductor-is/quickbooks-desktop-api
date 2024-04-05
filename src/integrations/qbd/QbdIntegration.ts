@@ -3450,6 +3450,26 @@ export default class QbdIntegration extends BaseIntegration {
    */
   public report = {
     /**
+     * Generates an aging report, which tracks outstanding invoices (in accounts
+     * receivable accounts) and unpaid bills (in accounts payable accounts).
+     *
+     * Note that you could use a collections report instead of the aging query,
+     * if that better suited your needs.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/AgingReportQuery
+     */
+    aging: async (
+      endUserId: string,
+      params: QbdTypes.AgingReportQueryRq,
+    ): Promise<NonNullable<QbdTypes.AgingReportQueryRs["ReportRet"]>> =>
+      this.sendRequestWrapper(
+        endUserId,
+        { AgingReportQueryRq: params },
+        "AgingReportQueryRs",
+        "ReportRet",
+      ),
+
+    /**
      * Generates budget reports similar to the budget report functionality that
      * is available within the QuickBooks UI. (From the main QB menubar select
      * Reports->Budgets & Forecasts.)
@@ -4242,6 +4262,50 @@ export default class QbdIntegration extends BaseIntegration {
         { TimeTrackingQueryRq: params },
         "TimeTrackingQueryRs",
         "TimeTrackingRet",
+      ),
+  };
+
+  /**
+   * A general transaction is a superset of all transaction types in QuickBooks
+   * Desktop.
+   */
+  public transaction = {
+    /**
+     * Queries for transactions across different transaction types. In contrast
+     * to the other transaction-specific queries, this query only returns data
+     * common to all transactions, such as `TxnID`, type, dates, accountRef, and
+     * so on. This query does return condensed transactions.
+     *
+     * Accordingly, if additional and more transaction-specific data is
+     * required, a subsequent call to the desired query can be used to get that
+     * transaction-specific data. For example, this method can be used to
+     * present all transactions in a certain date range, then the user can
+     * select a particular transaction, say an invoice transaction. In response
+     * to this choice, you could do an `InvoiceQuery` to pull up all of the
+     * invoice data.
+     *
+     * You should be aware that permissions are obeyed in this query. So, if you
+     * set the transaction type filter to “All” (or if you don’t set it at all),
+     * the query will be searching only those transaction types that are
+     * permissible types for the user currently logged in. Accordingly, if
+     * instead of “all,” you specify a transaction type that the currently
+     * logged in user is not permitted to access, you will get a runtime error,
+     * even if other permissible transaction types were specified as well.
+     *
+     * Finally, the transaction query is subject to sensitive data access level
+     * restrictions and payroll subscription status.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/TransactionQuery
+     */
+    query: async (
+      endUserId: string,
+      params: QbdTypes.TransactionQueryRq = {},
+    ): Promise<NonNullable<QbdTypes.TransactionQueryRs["TransactionRet"]>> =>
+      this.sendRequestWrapper(
+        endUserId,
+        { TransactionQueryRq: params },
+        "TransactionQueryRs",
+        "TransactionRet",
       ),
   };
 

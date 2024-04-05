@@ -31,7 +31,6 @@ export function checkForUpdates(): void {
         } else if (process.env["npm_execpath"]?.includes("pnpm") === true) {
           updateCommand = "pnpm add";
         }
-        console.log("updateCommand", updateCommand);
 
         console.warn(
           createFramedMessage([

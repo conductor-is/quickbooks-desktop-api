@@ -48,7 +48,7 @@ describe("logging interceptors", () => {
       const endUserInput = generateMockEndUserCreateInput({
         sourceId: endUser.sourceId,
         email: endUser.email,
-        name: endUser.name,
+        companyName: endUser.companyName,
       });
       mockAdapter.onPost("/end_users").reply(200, endUser);
 

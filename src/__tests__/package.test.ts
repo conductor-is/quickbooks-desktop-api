@@ -6,7 +6,6 @@ import os from "node:os";
 import path from "node:path";
 
 describe("package", () => {
-  const clientPackagePath = "./packages/client-node/";
   const packageParentDir = os.tmpdir();
   // `pnpm pack` creates a tarball with the format `{name}-{version}.tgz`.
   const packageFilePath = path.join(
@@ -15,6 +14,12 @@ describe("package", () => {
   );
 
   beforeAll(() => {
+    // Enable running this test from the monorepo root or from the `client-node`
+    // package directory.
+    const clientPackagePath = process.cwd().endsWith("client-node")
+      ? "."
+      : "./packages/client-node/";
+
     // Run `tsc` first with `stdout` to catch TypeScript errors, which are
     // output to `stdout` instead of `stderr`. We run this separately instead of
     // relying on the next command, `pnpm pack`, which also runs `tsc`, because
