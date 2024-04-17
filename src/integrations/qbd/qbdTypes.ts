@@ -1934,7 +1934,7 @@ export interface ColData {
   /** The data in this cell of the report. */
   Value: string;
   /** The data type: IDTYPE, STRTYPE, and so on. */
-  DataType: DataType;
+  DataType?: DataType;
 }
 
 export interface ColDesc {
@@ -1945,7 +1945,7 @@ export interface ColDesc {
   /** An identifying number that corresponds to the position of this column in the report. The columns are numbered from left to right, starting with 1. */
   ColID: number;
   /** The data type: IDTYPE, STRTYPE, and so on. */
-  DataType: DataType;
+  DataType?: DataType;
 }
 
 export interface ColTitle {
@@ -4075,6 +4075,8 @@ export interface DataRow {
   RowData?: RowData;
   /** A list of `IColData` objects, each of which describes the data in one cell of the report. */
   ColData?: ColData | ColData[];
+  /** The row number. Rows are numbered from top to bottom, starting with 1. */
+  RowNumber: number;
 }
 
 export type DataType =
@@ -11281,7 +11283,7 @@ export interface ReportData {
   /** A row that contains a calculated total of all the data that has come before and a double underline. There will only be one `TotalRow` per report.
 
   If `TotalRow` does not include any numerical values, the columns required to show the total values are not part of the report. These columns were not included when the report was customized. */
-  TotalRow?: TotalRow;
+  TotalRow?: TotalRow | TotalRow[];
 }
 
 export type ReportDateMacro =
@@ -13222,6 +13224,7 @@ export interface SubtotalRow {
   RowData?: RowData;
   /** A list of `IColData` objects, each of which describes the data in one cell of the report. */
   ColData?: ColData | ColData[];
+  RowNumber: number;
 }
 
 export type SummarizeBudgetColumnsBy = "Class" | "Customer" | "Date";
@@ -13349,7 +13352,6 @@ export interface TermsRef {
 }
 
 export interface TextRow {
-  /** The row number. Rows are numbered from top to bottom, starting with 1. */
   RowNumber: number;
   /** The data in this cell of the report. */
   Value: string;
@@ -13561,6 +13563,7 @@ export interface TotalRow {
   RowData?: RowData;
   /** A list of `IColData` objects, each of which describes the data in one cell of the report. */
   ColData?: ColData | ColData[];
+  RowNumber: number;
 }
 
 export interface TransactionAccountFilter {
@@ -13928,7 +13931,7 @@ export interface TransferInventoryLineRet {
   /** The lot number of the asset. */
   LotNumber?: string;
   /** The expiration date of the inventory serial/lot number. Expiration `Date` is supported from QB Desktop 2023 version 3 (USA & Canada) and SDK 16.0. */
-  ExpirationDateForSerialLotNumber: string;
+  ExpirationDateForSerialLotNumber?: string;
 }
 
 export interface TransferInventoryMod {
