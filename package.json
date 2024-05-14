@@ -1,6 +1,6 @@
 {
   "name": "conductor-node",
-  "version": "11.6.5",
+  "version": "11.6.6",
   "description": "QuickBooks Desktop API for Node.js and TypeScript",
   "keywords": [
     "QuickBooks",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.22.0",
-    "tsc-alias": "^1.8.8"
+    "tsc-alias": "^1.8.9"
   },
   "engines": {
     "node": ">=16"

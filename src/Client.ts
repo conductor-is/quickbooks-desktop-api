@@ -24,7 +24,7 @@ export default class Client {
   public readonly authSessions: AuthSessionsResource;
 
   /**
-   * Executes any QuickBooks Desktop (QBD) API against the specified end-user.
+   * Executes any QuickBooks Desktop (QBD) API against the specified EndUser.
    */
   public readonly qbd: QbdIntegration;
 

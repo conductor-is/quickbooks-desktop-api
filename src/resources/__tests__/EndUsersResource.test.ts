@@ -73,7 +73,7 @@ describe("EndUsersResource", () => {
       });
     });
 
-    it("returns the created end-user", () => {
+    it("returns the created EndUser", () => {
       expect(result).toStrictEqual(endUser);
     });
   });
@@ -95,7 +95,7 @@ describe("EndUsersResource", () => {
       });
     });
 
-    it("returns the retrieved end-user", () => {
+    it("returns the retrieved EndUser", () => {
       expect(result).toStrictEqual(endUser);
     });
   });

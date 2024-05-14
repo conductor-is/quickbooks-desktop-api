@@ -36,6 +36,18 @@ Conductor, the company, is building a data integration platform for vertical Saa
   <a href="https://docs.conductor.is"><img src="https://user-images.githubusercontent.com/170023/213273732-83dd6881-0b36-4787-820b-bd55cdc8444f.jpg" alt="QuickBooks Desktop autocomplete" width="600" style="border-radius: 20px;" /></a>
 </div>
 
+## Key features
+
+- **Access any data type:** Query, create, or update any QuickBooks Desktop data type.
+- **Modern API:** JSON-based REST API, replacing the old XML-based SOAP model.
+- **Typed Node.js client:** Fully typed library with autocomplete, inline docs, and type validation for endpoints, parameters, and responses.
+- **Request handling:** Manages queues, timeouts, retries, and pagination.
+- **Multi-company support:** Connects to multiple QuickBooks Desktop company files.
+- **Validation:** Sanitizes and validates all inputs and outputs.
+- **Unified error handling:** Streamlines error handling across the QuickBooks stack.
+- **Authentication flow UI:** Simple UI for securely connecting QuickBooks Desktop accounts.
+- **Error resolution:** Detailed guides and instructions for resolving errors and handling edge cases.
+
 ## What is this repo?
 
 This repository is a library for conveniently accessing Conductor's QuickBooks Desktop API from TypeScript or JavaScript. The library is a wrapper around the Conductor REST API, providing a fully-typed, easy-to-use interface for fetching, creating, and updating QuickBooks Desktop objects.

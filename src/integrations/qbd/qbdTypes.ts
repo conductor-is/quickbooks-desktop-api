@@ -158,7 +158,7 @@ export interface AccountQueryRq {
   /** Filters according to the object’s `Name`. */
   NameRangeFilter?: NameRangeFilter;
   /** A list of QuickBooks account types. */
-  AccountType?: AccountType | AccountType[];
+  AccountType?: AccountType;
   /** Filters by the specified currency. */
   CurrencyFilter?: CurrencyFilter;
   /** You use this if you want to limit the data that will be returned in the response. In this list, you specify the name of each top-level element or aggregate that you want to be returned in the response to the request. You cannot specify fields within an aggregate, for example, you cannot specify a `City` within an `Address`: you must specify `Address` and will get the entire address.
