@@ -9833,6 +9833,72 @@ export interface LinkToTxn {
 
 export type LinkType = "AMTTYPE" | "QUANTYPE";
 
+export interface ListDeletedQueryRq {
+  /** A list of enum values showing which types of deleted lists the query will return. */
+  ListDelType: ListDelType | ListDelType[];
+  /** Filters according to delete dates (within the last 90 days). */
+  DeletedDateRangeFilter?: DeletedDateRangeFilter;
+  /** You use this if you want to limit the data that will be returned in the response. In this list, you specify the name of each top-level element or aggregate that you want to be returned in the response to the request. You cannot specify fields within an aggregate, for example, you cannot specify a `City` within an `Address`: you must specify `Address` and will get the entire address. The names specified in the list are not parsed, so you must be especially careful to supply valid names, properly cased. No error is returned in the status code if you specify an invalid name. Notice that if you want to return custom data or private data extensions, you must specify the `DataExtRet` element and you must supply the `OwnerID` set to either a value of 0 (custom data) or the GUID for the private data. */
+  IncludeRetElement?: string[] | string;
+}
+
+export interface ListDeletedQueryRs {
+  ListDeletedRet: ListDeletedRet[];
+}
+
+export interface ListDeletedRet {
+  /** The type of list from which a list member is being deleted. */
+  ListDelType: ListDelType;
+  /** Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID: string;
+  /** Time the object was created. */
+  TimeCreated: string;
+  /** The time when this list or transaction object was deleted. */
+  TimeDeleted: string;
+  /** `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
+  FullName?: string;
+}
+
+export type ListDelType =
+  | "Account"
+  | "BillingRate"
+  | "Class"
+  | "Currency"
+  | "Customer"
+  | "CustomerMsg"
+  | "CustomerType"
+  | "DateDrivenTerms"
+  | "Employee"
+  | "InventorySite"
+  | "ItemDiscount"
+  | "ItemFixedAsset"
+  | "ItemGroup"
+  | "ItemInventory"
+  | "ItemInventoryAssembly"
+  | "ItemNonInventory"
+  | "ItemOtherCharge"
+  | "ItemPayment"
+  | "ItemSalesTax"
+  | "ItemSalesTaxGroup"
+  | "ItemService"
+  | "ItemSubtotal"
+  | "JobType"
+  | "OtherName"
+  | "PaymentMethod"
+  | "PayrollItemNonWage"
+  | "PayrollItemWage"
+  | "PriceLevel"
+  | "SalesRep"
+  | "SalesTaxCode"
+  | "ShipMethod"
+  | "StandardTerms"
+  | "ToDo"
+  | "UnitOfMeasureSet"
+  | "Vehicle"
+  | "Vendor"
+  | "VendorType"
+  | "WorkersCompCode";
+
 export interface Locations {
   /** Where the asset is located or has been placed into service. */
   Location: string;

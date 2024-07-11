@@ -3051,6 +3051,43 @@ export default class QbdIntegration extends BaseIntegration {
   };
 
   /**
+   * A list element is a record in a list, such as an `Account`, `Customer`, or
+   * `Employee`.
+   */
+  public listDeleted = {
+    /**
+     * Returns all list elements deleted within the last 90 days, grouped
+     * according to object type.
+     *
+     * If you are synchronizing deletes, you might want to specify `ListDelType`
+     * elements in order of dependency; for example, first specify a
+     * `ListDelType` of `Item`, then specify a `ListDelType` of `Vendor`. This
+     * way the SDK will return `Item` deletes before `Vendor` deletes (both in
+     * order of real delete times). `Item` depends on (refers to) to `Vendor`,
+     * so by having the `Item` deletes returned first you avoid a dependency
+     * problem.
+     *
+     * By default, the records of each type are returned in ascending order,
+     * according to the “real” delete time. For example: If list object A is
+     * deleted at 10 a.m. and list object B is deleted at 11 a.m., the query
+     * request will return A first, then B.
+     *
+     * See more:
+     * https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/ListDeletedQuery
+     */
+    query: async (
+      endUserId: string,
+      params: QbdTypes.ListDeletedQueryRq,
+    ): Promise<NonNullable<QbdTypes.ListDeletedQueryRs["ListDeletedRet"]>> =>
+      this.sendRequestWrapper(
+        endUserId,
+        { ListDeletedQueryRq: params },
+        "ListDeletedQueryRs",
+        "ListDeletedRet",
+      ),
+  };
+
+  /**
    * The “other names” list contains any names that do not appear on customer,
    * vendor, or employee lists.
    */

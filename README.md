@@ -38,14 +38,16 @@ Conductor, the company, is building a data integration platform for vertical Saa
 
 ## Key features
 
-- **Access any data type:** Query, create, or update any QuickBooks Desktop data type.
+- **Any data type:** Query, create, or update any QuickBooks Desktop data type.
+- **Real-time**: Get real-time updates on your QuickBooks Desktop data. No queues, no polling.
 - **Modern API:** JSON-based REST API, replacing the old XML-based SOAP model.
 - **Typed Node.js client:** Fully typed library with autocomplete, inline docs, and type validation for endpoints, parameters, and responses.
-- **Request handling:** Manages queues, timeouts, retries, and pagination.
+- **Request handling:** Invisibly manages queues, timeouts, retries, and pagination.
 - **Multi-company support:** Connects to multiple QuickBooks Desktop company files.
 - **Validation:** Sanitizes and validates all inputs and outputs.
 - **Unified error handling:** Streamlines error handling across the QuickBooks stack.
 - **Authentication flow UI:** Simple UI for securely connecting QuickBooks Desktop accounts.
+- **Dashboard**: UI to monitor and manage your QuickBooks Desktop connections and data.
 - **Error resolution:** Detailed guides and instructions for resolving errors and handling edge cases.
 
 ## What is this repo?
@@ -86,9 +88,9 @@ const conductor = new Conductor("{{YOUR_SECRET_KEY}}");
 async function main() {
   // 1. Create a new EndUser.
   const endUser = await conductor.endUsers.create({
+    companyName: "{{END_USER_COMPANY_NAME}}",
     sourceId: "{{UNIQUE_ID_FROM_YOUR_DB}}",
     email: "{{END_USER_EMAIL}}",
-    companyName: "{{END_USER_COMPANY_NAME}}",
   });
   console.log("Save this EndUser ID to auth future requests:", endUser.id);
 

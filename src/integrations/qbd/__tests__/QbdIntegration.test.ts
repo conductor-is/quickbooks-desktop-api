@@ -2,7 +2,10 @@ import Client from "@conductor/client-node/Client";
 import { ConductorIntegrationError } from "@conductor/client-node/utils/error";
 import { expectToRejectWithConductorError } from "@conductor/client-node/utils/test/misc";
 
-const CATEGORIES_REQUIRING_QUERY_PARAMS = new Set(["txnDeleted"]);
+const CATEGORIES_REQUIRING_QUERY_PARAMS = new Set([
+  "txnDeleted",
+  "listDeleted",
+]);
 
 describe("QbdIntegration", () => {
   describe("invokes `sendRequest` with the correct arguments", () => {

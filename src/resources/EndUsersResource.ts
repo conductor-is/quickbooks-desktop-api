@@ -14,18 +14,20 @@ export interface EndUser {
    */
   readonly objectType: "end_user";
   /**
-   * Your end-user's unique ID in _your_ database. Must be distinct from your
-   * other end-users.
-   */
-  readonly sourceId: string;
-  /**
-   * Your end-user's email address.
-   */
-  readonly email: string;
-  /**
    * Your end-user's company name that will be shown elsewhere in Conductor.
    */
   readonly companyName: string;
+  /**
+   * A unique identifier for your end-user from your system. Maps users between
+   * your database and Conductor. Must be unique for each user. If you have only
+   * one user, you may use any string value.
+   */
+  readonly sourceId: string;
+  /**
+   * Your end-user's email address for identification purposes. Setting this
+   * field will not cause any emails to be sent.
+   */
+  readonly email: string;
   /**
    * The time at which the object was created.
    */
