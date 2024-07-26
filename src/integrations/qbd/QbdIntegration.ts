@@ -2792,6 +2792,24 @@ export default class QbdIntegration extends BaseIntegration {
       ),
   };
 
+  public itemSites = {
+    /**
+     * Queries for the specified items at the specified inventory site.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/ItemSitesQuery
+     */
+    query: async (
+      endUserId: string,
+      params: QbdTypes.ItemSitesQueryRq = {},
+    ): Promise<NonNullable<QbdTypes.ItemSitesQueryRs["ItemSitesRet"]>> =>
+      this.sendRequestWrapper(
+        endUserId,
+        { ItemSitesQueryRq: params },
+        "ItemSitesQueryRs",
+        "ItemSitesRet",
+      ),
+  };
+
   /**
    * A subtotal item is used on a sales form to add up the amounts of the item
    * lines above it, up to the previous subtotal.
@@ -3139,6 +3157,57 @@ export default class QbdIntegration extends BaseIntegration {
         { OtherNameQueryRq: params },
         "OtherNameQueryRs",
         "OtherNameRet",
+      ),
+  };
+
+  /**
+   * A payment method is a method of payment that a business accepts, such as
+   * cash, check, or credit card.
+   */
+  public paymentMethod = {
+    /**
+     * Adds a payment method, which is the way a customer pays for goods or
+     * services, for example, cash, check, or Master Card.
+     *
+     * A `PaymentMethodRef` aggregate refers to an item on the `PaymentMethod`
+     * list. In a request, if a `PaymentMethodRef` aggregate includes both
+     * `FullName` and `ListID`, `FullName` will be ignored.
+     *
+     * In a `SalesReceiptAdd`, `ReceivePaymentAdd`, or `ARRefundCreditCard`
+     * request that contains credit card transaction data supplied from QBMS
+     * transaction responses, you must specify the payment method, and the
+     * payment method must be a credit card type.
+     *
+     * See more:
+     * https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/PaymentMethodAdd
+     */
+    add: async (
+      endUserId: string,
+      params: QbdTypes.PaymentMethodAddRq["PaymentMethodAdd"],
+    ): Promise<NonNullable<QbdTypes.PaymentMethodAddRs["PaymentMethodRet"]>> =>
+      this.sendRequestWrapper(
+        endUserId,
+        { PaymentMethodAddRq: { PaymentMethodAdd: params } },
+        "PaymentMethodAddRs",
+        "PaymentMethodRet",
+      ),
+
+    /**
+     * Queries for the specified payment method or set of payment methods.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/PaymentMethodQuery
+     */
+    query: async (
+      endUserId: string,
+      params: QbdTypes.PaymentMethodQueryRq = {},
+    ): Promise<
+      NonNullable<QbdTypes.PaymentMethodQueryRs["PaymentMethodRet"]>
+    > =>
+      this.sendRequestWrapper(
+        endUserId,
+        { PaymentMethodQueryRq: params },
+        "PaymentMethodQueryRs",
+        "PaymentMethodRet",
       ),
   };
 
