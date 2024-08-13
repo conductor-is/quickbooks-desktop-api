@@ -1,6 +1,6 @@
 {
   "name": "conductor-node",
-  "version": "11.6.7",
+  "version": "11.6.14",
   "description": "QuickBooks Desktop API for Node.js and TypeScript",
   "keywords": [
     "QuickBooks",
@@ -36,7 +36,7 @@
     "prepublishOnly": "pnpm jest"
   },
   "dependencies": {
-    "axios": "^1.7.2"
+    "axios": "^1.7.4"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.22.0",

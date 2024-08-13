@@ -7,6 +7,8 @@ const CATEGORIES_REQUIRING_QUERY_PARAMS = new Set([
   "listDeleted",
 ]);
 
+const CATEGORIES_WITHOUT_QUERY = new Set(["dataExt"]);
+
 describe("QbdIntegration", () => {
   describe("invokes `sendRequest` with the correct arguments", () => {
     const qbdIntegration = new Client("mock-api-key").qbd;
@@ -27,46 +29,51 @@ describe("QbdIntegration", () => {
     describe.each(methodCategories)("%s", (categoryName, methodCategory) => {
       const categoryNameTitleCase =
         categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
-
-      it.each(Object.entries(methodCategory))(
-        "%s",
-        async (methodName, method) => {
-          expect.assertions(3);
-          const methodNameTitleCase =
-            methodName.charAt(0).toUpperCase() + methodName.slice(1);
-          const sendRequestSpy = jest
-            // @ts-expect-error -- Accessing a private property for testing.
-            .spyOn(qbdIntegration, "sendRequest")
-            // @ts-expect-error -- Accessing a private property for testing.
-            .mockResolvedValue({
-              [`${categoryNameTitleCase}${methodNameTitleCase}Rs`]: {
-                [`${categoryNameTitleCase}Ret`]: expectedResponse,
-              },
-            });
-
-          let params: Record<string, unknown> = { Foo: "Bar" };
-          const response = await method(endUserId, params);
-
-          // eslint-disable-next-line jest/no-conditional-in-test -- No way around this.
-          if (methodName === "add" || methodName === "mod") {
-            // The parameters for `add` and `mod` requests are nested an
-            // additional layer.
-            params = {
-              [`${categoryNameTitleCase}${methodNameTitleCase}`]: params,
-            };
-          }
-
-          expect(sendRequestSpy).toHaveBeenCalledTimes(1);
-          expect(sendRequestSpy).toHaveBeenCalledWith(
-            endUserId,
-            "quickbooks_desktop",
-            { [`${categoryNameTitleCase}${methodNameTitleCase}Rq`]: params },
-          );
-          expect(response).toStrictEqual(expectedResponse);
-        },
+      // Skip `transaction.delete()` and `transaction.void(), which have a
+      // unique input and output structure.
+      const methods = Object.entries(methodCategory).filter(
+        ([methodName]) => methodName !== "delete" && methodName !== "void",
       );
 
-      if (!CATEGORIES_REQUIRING_QUERY_PARAMS.has(categoryName)) {
+      it.each(methods)("%s", async (methodName, method) => {
+        expect.assertions(3);
+        const methodNameTitleCase =
+          methodName.charAt(0).toUpperCase() + methodName.slice(1);
+        const sendRequestSpy = jest
+          // @ts-expect-error -- Accessing a private property for testing.
+          .spyOn(qbdIntegration, "sendRequest")
+          // @ts-expect-error -- Accessing a private property for testing.
+          .mockResolvedValue({
+            [`${categoryNameTitleCase}${methodNameTitleCase}Rs`]: {
+              [`${categoryNameTitleCase}Ret`]: expectedResponse,
+            },
+          });
+
+        let params: Record<string, unknown> = { Foo: "Bar" };
+        const response = await method(endUserId, params);
+
+        // eslint-disable-next-line jest/no-conditional-in-test -- Unavoidable.
+        if (methodName === "add" || methodName === "mod") {
+          // The parameters for `add` and `mod` requests are nested an
+          // additional layer.
+          params = {
+            [`${categoryNameTitleCase}${methodNameTitleCase}`]: params,
+          };
+        }
+
+        expect(sendRequestSpy).toHaveBeenCalledTimes(1);
+        expect(sendRequestSpy).toHaveBeenCalledWith(
+          endUserId,
+          "quickbooks_desktop",
+          { [`${categoryNameTitleCase}${methodNameTitleCase}Rq`]: params },
+        );
+        expect(response).toStrictEqual(expectedResponse);
+      });
+
+      if (
+        !CATEGORIES_REQUIRING_QUERY_PARAMS.has(categoryName) &&
+        !CATEGORIES_WITHOUT_QUERY.has(categoryName)
+      ) {
         it("query without `params`", async () => {
           expect.assertions(3);
           const methodNameTitleCase = "Query";

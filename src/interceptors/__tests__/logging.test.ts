@@ -12,7 +12,6 @@ import {
 } from "@conductor/client-node/utils/test/generators/endUser";
 import type { AxiosRequestConfig } from "axios";
 import MockAdapter from "axios-mock-adapter";
-import util from "node:util";
 
 describe("logging interceptors", () => {
   describe("`verbose` is `true`", () => {
@@ -272,11 +271,11 @@ describe("getDurationStringFromConfig", () => {
 });
 
 describe("stringifyForLogs", () => {
-  it("uses Node.js's native `util.inspect` to stringify the provided object", () => {
-    jest.spyOn(util, "inspect");
+  it("uses `JSON.stringify()` to to stringify the provided object", () => {
+    jest.spyOn(JSON, "stringify");
     const obj = { name: "John", age: 30 };
     stringifyForLogs(obj);
-    expect(util.inspect).toHaveBeenCalledWith(obj, { depth: 5, colors: false });
-    expect(util.inspect).toHaveBeenCalledTimes(1);
+    expect(JSON.stringify).toHaveBeenCalledWith(obj, undefined, 2);
+    expect(JSON.stringify).toHaveBeenCalledTimes(1);
   });
 });

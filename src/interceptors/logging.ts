@@ -1,6 +1,5 @@
 import type { ConductorError } from "@conductor/client-node/utils/error";
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import util from "node:util";
 
 export interface RequestConfigWithStartTime extends AxiosRequestConfig {
   startTime: number;
@@ -114,10 +113,6 @@ export function getDurationStringFromConfig(
 }
 
 export function stringifyForLogs(object: unknown): string {
-  return util.inspect(object, {
-    depth: 5,
-    // Omit color codes to keep logs clean when sent to a log management
-    // service.
-    colors: false,
-  });
+  // Output raw JSON for easy copy-pasting for REST API development.
+  return JSON.stringify(object, undefined, 2);
 }

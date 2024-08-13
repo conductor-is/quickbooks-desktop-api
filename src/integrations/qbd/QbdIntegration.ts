@@ -1323,6 +1323,87 @@ export default class QbdIntegration extends BaseIntegration {
   };
 
   /**
+   * A data extension is a custom field that you can add to a list object,
+   * transaction, or transaction line item.
+   */
+  public dataExt = {
+    /**
+     * Writes data to one data extension (i.e., custom field in QuickBooks).
+     * This request can only be invoked if a data extension definition has
+     * already been defined for the target object type. That is, before you can
+     * perform the `DataExtAdd` on a particular customer, say John Henry, the
+     * data extension must already be defined for the `Customer` object. Notice
+     * that a data extension definition can be defined in either of two ways:
+     * via `DataExtDefAdd` as already described, or via the QuickBooks UI by the
+     * user specifying a custom field. Only custom fields can be defined through
+     * the UI, not private data extensions.
+     *
+     * `DataExtAdd` adds a custom field (if `OwnerID` is set to 0) or a private
+     * data extension (if `OwnerID` is set to a GUID) containing the specified
+     * value. The custom field or private data extension and value is added to
+     * the specified list object, or transaction, or transaction line item.
+     *
+     * `DataExtAdd` will return error 3180 if you invoke this on a custom data
+     * ext definition that has been deleted and then re-added from the UI. (You
+     * can’t re-add a deleted data ext def via the SDK.) However, you can use
+     * `DataExtMod` to write data to that re-added data ext def.
+     *
+     * Important: If you want to perform a `DataExtAdd` on a transaction line
+     * item, you should use custom fields instead of private data extensions
+     * because only custom field data will be returned in queries. Currently,
+     * private data is not returned.
+     *
+     * Both `DataExtAdd` and `DataExtMod` cause a Modify event to be generated
+     * for the parent object. For example invoking one of these on a `Customer`
+     * causes a `Customer` Modify event. The Time Modified value for that parent
+     * object is also updated.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/DataExtAdd
+     */
+    add: async (
+      endUserId: string,
+      params: QbdTypes.DataExtAddRq["DataExtAdd"],
+    ): Promise<NonNullable<QbdTypes.DataExtAddRs["DataExtRet"]>> =>
+      this.sendRequestWrapper(
+        endUserId,
+        { DataExtAddRq: { DataExtAdd: params } },
+        "DataExtAddRs",
+        "DataExtRet",
+      ),
+
+    /**
+     * This request can only be invoked if a data extension definition has
+     * already been added to the target object (for example, the customer John
+     * Henry) by a `DataExtDefAdd` or by the user specifying a custom field
+     * value for that object via the QuickBooks UI.
+     *
+     * If you want to clear the data extension value (to make the custom field
+     * or private extension blank), you must use `DataExtDel`. The `DataExtMod`
+     * request cannot be used to clear the field.
+     *
+     * Both `DataExtAdd` and `DataExtMod` cause a Modify event to be generated
+     * for the parent object. For example invoking one of these on a `Customer`
+     * causes a `Customer` Modify event. The Time Modified value for that parent
+     * object is also updated.
+     *
+     * Notice that the Mod operation does not support macros like `DataExtAdd`
+     * does.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/DataExtMod
+     */
+    mod: async (
+      endUserId: string,
+      params: QbdTypes.DataExtModRq["DataExtMod"],
+    ): Promise<NonNullable<QbdTypes.DataExtModRs["DataExtRet"]>> =>
+      this.sendRequestWrapper(
+        endUserId,
+        { DataExtModRq: { DataExtMod: params } },
+        "DataExtModRs",
+        "DataExtRet",
+      ),
+  };
+
+  /**
    * Date-driven terms show the day of the month by which payment is due and can
    * include a discount for early payment. Payments with standard terms, on the
    * other hand, are due within a certain number of days.
@@ -4413,6 +4494,65 @@ export default class QbdIntegration extends BaseIntegration {
         "TransactionQueryRs",
         "TransactionRet",
       ),
+
+    /**
+     * Deleting a transaction removes it completely and irreversibly. (Using a
+     * `TxnVoid` request to void a transaction, on the other hand, sets its
+     * amount to zero but keeps a record of it in QuickBooks.)
+     *
+     * If you try to delete or void a transaction while it is in use, you will
+     * get an error. You will also get an error if you try to delete or void a
+     * transaction (say a sales receipt) while a linked transaction (such as a
+     * deposit) is in use. If you try to delete or void a transaction that was
+     * created before the company’s closing date, you might or might not get an
+     * error, depending on the permissions and passwords that are set in
+     * QuickBooks.
+     *
+     * The mode in which a QuickBooks company file is open (single-user or
+     * multi-user) does not impact your application’s ability to delete
+     * transaction objects from it. (List objects can only be deleted if the
+     * company file is open in single-user mode.)
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/TxnDel
+     */
+    delete: async (
+      endUserId: string,
+      params: QbdTypes.TxnDelRq,
+    ): Promise<NonNullable<QbdTypes.TxnDelRs>> =>
+      // Call `this.sendRequest()` instead of `this.sendRequestWrapper()`
+      // because `TxnDel` has a unique input and output structure.
+      this.sendRequest(endUserId, "quickbooks_desktop", {
+        TxnDelRq: params,
+      }) as Promise<QbdTypes.TxnDelRs>,
+
+    /**
+     * Voiding a transaction sets its amount to zero but keeps a record of it in
+     * QuickBooks. (Using `TxnDel` to delete a transaction, on the other hand,
+     * removes the transaction completely.)
+     *
+     * If you try to void or delete a transaction while it is in use, you will
+     * get an error. You will also get an error if you try to void or delete a
+     * transaction (say a sales receipt) while a linked transaction (such as a
+     * deposit) is in use. If you try to void or delete a transaction that was
+     * created before the company’s closing date, you might or might not get an
+     * error, depending on the permissions and passwords that are set in
+     * QuickBooks.
+     *
+     * The mode in which a QuickBooks company file is open (single-user or
+     * multi-user) does not impact your application’s ability to void
+     * transaction objects in it.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/TxnVoid
+     */
+    void: async (
+      endUserId: string,
+      params: QbdTypes.TxnVoidRq,
+    ): Promise<NonNullable<QbdTypes.TxnVoidRs>> =>
+      // Call `this.sendRequest()` instead of `this.sendRequestWrapper()`
+      // because `TxnVoid` has a unique input and output structure.
+      this.sendRequest(endUserId, "quickbooks_desktop", {
+        TxnVoidRq: params,
+      }) as Promise<QbdTypes.TxnVoidRs>,
   };
 
   /**

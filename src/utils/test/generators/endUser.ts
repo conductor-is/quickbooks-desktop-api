@@ -10,7 +10,7 @@ export function generateMockEndUser(overrides?: Partial<EndUser>): EndUser {
     objectType: "end_user",
     companyName: "Test Company",
     sourceId: generateUniqueId("src"),
-    email: "danny@conductor.is",
+    email: "hi@conductor.is",
     createdAt: new Date().toISOString(),
     ...overrides,
   };
@@ -22,7 +22,7 @@ export function generateMockEndUserCreateInput(
   return {
     companyName: "Test Company",
     sourceId: generateUniqueId("src"),
-    email: "danny@conductor.is",
+    email: "hi@conductor.is",
     ...overrides,
   };
 }

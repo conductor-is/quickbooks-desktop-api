@@ -198,7 +198,6 @@ describe("isWellFormedConductorServerError", () => {
   });
 
   it("returns `false` when the provided value is `undefined`", () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined -- Intentionally testing `undefined`.
     expect(isWellFormedConductorServerError(undefined)).toBe(false);
   });
 });

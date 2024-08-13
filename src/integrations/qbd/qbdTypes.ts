@@ -4045,6 +4045,66 @@ export interface DataExt {
   DataExtValue: string;
 }
 
+export interface DataExtAdd {
+  /** `OwnerID` refers to the owner of a data extension, and must be 0 or a valid GUID. (Custom fields, which are visible in the QuickBooks UI, always have an `OwnerID` of 0. ) Usually you would keep your application’s GUID confidential to prevent other applications from accessing your data extensions. But if you want to share data extensions with another application, the applications need to use the same GUID. In this case, each application could use two GUIDs, one for shared data extensions and one for confidential data extensions. (An application can have any number of GUIDs.) When you share a data extension with another application, the other application must know both the `OwnerID` and the `DataExtName`, as these together form a data extension’s unique name. */
+  OwnerID: string;
+  /** The name of the data extension. If this is a custom field, `DataExtName` will be visible as a label in the QuickBooks user interface. Also because `OwnerID` and `DataExtName` together make the data extension unique, and because custom fields all have the same `OwnerID` of zero, the `DataExtName` must be a unique value among existing custom fields. In contrast, the `DataExtName` for private data extensions must be unique only for the specified `OwnerID` GUID. */
+  DataExtName: string;
+  /** The type of list object (e.g. Customer) that this data extension is attached to. */
+  ListDataExtType?: ListDataExtType;
+  /** Refers to a list object. In a `DataExtAdd` request, the list object ref must be the same type as the type specified in `ListDataExtType`.If a `ListObjRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. */
+  ListObjRef?: ListObjRef;
+  /** The type of transaction that the data extension belongs to. */
+  TxnDataExtType?: TxnDataExtType;
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests. Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID?: string;
+  /** Identification number of the transaction line. (`TxnLineID` is supported as of v2.0 of the SDK. With qbXML v1.0 and v1.1, `TxnLineID` is always returned as zero.) If you need to add a new transaction line in a transaction Mod request, you can do so by setting the `TxnLineID` to -1. */
+  TxnLineID?: string;
+  /** Not supported. */
+  OtherDataExtType?: OtherDataExtType;
+  /** The data in this field. The maximum length of `DataExtValue` will depend on the `DataExtType` of this data extension. For example, if `DataExtType` is `STR255TYPE`, the maximum length of `DataExtValue` is 255 characters. If `DataExtType` is `STR1024TYPE`, the maximum size of `DataExtValue` is `1KB`. */
+  DataExtValue: string;
+}
+
+export interface DataExtAddRq {
+  DataExtAdd: DataExtAdd;
+}
+
+export interface DataExtAddRs {
+  DataExtRet?: DataExtRet;
+  ErrorRecovery?: ErrorRecovery;
+}
+
+export interface DataExtMod {
+  /** `OwnerID` refers to the owner of a data extension, and must be 0 or a valid GUID. (Custom fields, which are visible in the QuickBooks UI, always have an `OwnerID` of 0. ) Usually you would keep your application’s GUID confidential to prevent other applications from accessing your data extensions. But if you want to share data extensions with another application, the applications need to use the same GUID. In this case, each application could use two GUIDs, one for shared data extensions and one for confidential data extensions. (An application can have any number of GUIDs.) When you share a data extension with another application, the other application must know both the `OwnerID` and the `DataExtName`, as these together form a data extension’s unique name. */
+  OwnerID: string;
+  /** The name of the data extension. If this is a custom field, `DataExtName` will be visible as a label in the QuickBooks user interface. Also because `OwnerID` and `DataExtName` together make the data extension unique, and because custom fields all have the same `OwnerID` of zero, the `DataExtName` must be a unique value among existing custom fields. In contrast, the `DataExtName` for private data extensions must be unique only for the specified `OwnerID` GUID. */
+  DataExtName: string;
+  /** The type of list object (e.g. Customer) that this data extension is attached to. */
+  ListDataExtType?: ListDataExtType;
+  /** Refers to a list object. In a `DataExtAdd` request, the list object ref must be the same type as the type specified in `ListDataExtType`.If a `ListObjRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. */
+  ListObjRef?: ListObjRef;
+  /** The type of transaction that the data extension belongs to. */
+  TxnDataExtType?: TxnDataExtType;
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests. Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID?: string;
+  /** Identification number of the transaction line. (`TxnLineID` is supported as of v2.0 of the SDK. With qbXML v1.0 and v1.1, `TxnLineID` is always returned as zero.) If you need to add a new transaction line in a transaction Mod request, you can do so by setting the `TxnLineID` to -1. */
+  TxnLineID?: string;
+  /** Not supported. */
+  OtherDataExtType?: OtherDataExtType;
+  /** The data in this field. The maximum length of `DataExtValue` will depend on the `DataExtType` of this data extension. For example, if `DataExtType` is `STR255TYPE`, the maximum length of `DataExtValue` is 255 characters. If `DataExtType` is `STR1024TYPE`, the maximum size of `DataExtValue` is `1KB`. */
+  DataExtValue: string;
+}
+
+export interface DataExtModRq {
+  DataExtMod: DataExtMod;
+}
+
+export interface DataExtModRs {
+  DataExtRet?: DataExtRet;
+  ErrorRecovery?: ErrorRecovery;
+}
+
 export interface DataExtRet {
   /** `OwnerID` refers to the owner of a data extension, and must be 0 or a valid GUID. (Custom fields, which are visible in the QuickBooks UI, always have an `OwnerID` of 0. )
 
@@ -9894,6 +9954,14 @@ export interface LinkToTxn {
 
 export type LinkType = "AMTTYPE" | "QUANTYPE";
 
+export type ListDataExtType =
+  | "Account"
+  | "Customer"
+  | "Employee"
+  | "Item"
+  | "OtherName"
+  | "Vendor";
+
 export interface ListDeletedQueryRq {
   /** A list of enum values showing which types of deleted lists the query will return. */
   ListDelType: ListDelType | ListDelType[];
@@ -9959,6 +10027,13 @@ export type ListDelType =
   | "Vendor"
   | "VendorType"
   | "WorkersCompCode";
+
+export interface ListObjRef {
+  /** Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID?: string;
+  /** `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
+  FullName?: string;
+}
 
 export interface Locations {
   /** Where the asset is located or has been placed into service. */
@@ -10045,6 +10120,8 @@ export type Operator =
   | "LessThanEqual";
 
 export type OptionForPriceRuleConflict = "BasePrice" | "Zero";
+
+export type OtherDataExtType = "Company";
 
 export interface OtherNameAdd {
   /** The case-insensitive name of a list object, not including the names of its ancestors. `Name` must be unique, unless it is the `Name` of a “hierarchical” list object. List objects in different hierarchies can have duplicate names because their `FullNames` will still be unique. For example, two objects could both have the `Name` kitchen, but they could have unique `FullNames`, such as Job12:kitchen and Baker:kitchen. For built-in currencies, `Name` is the internationally accepted currency name and is not editable. */
@@ -14314,6 +14391,30 @@ export interface TransferToAccountRef {
   FullName?: string;
 }
 
+export type TxnDataExtType =
+  | "ARRefundCreditCard"
+  | "Bill"
+  | "BillPaymentCheck"
+  | "BillPaymentCreditCard"
+  | "BuildAssembly"
+  | "Charge"
+  | "Check"
+  | "CreditCardCharge"
+  | "CreditCardCredit"
+  | "CreditMemo"
+  | "Deposit"
+  | "Estimate"
+  | "InventoryAdjustment"
+  | "Invoice"
+  | "ItemReceipt"
+  | "JournalEntry"
+  | "PurchaseOrder"
+  | "ReceivePayment"
+  | "SalesOrder"
+  | "SalesReceipt"
+  | "SalesTaxPaymentCheck"
+  | "VendorCredit";
+
 export interface TxnDateRangeFilter {
   /** Selects transactions created on or after this date. Both `FromTxnDate` and `ToTxnDate` must be between 01/01/1901 and 12/31/9999.
 
@@ -14355,6 +14456,25 @@ export interface TxnDeletedRet {
   TimeDeleted: string;
   /** A string of characters that refers to this transaction and that can be arbitrarily changed by the QuickBooks user. In a `BillPaymentCheckAdd` request, if you want to set the check number, use `RefNumber`.`Note` (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request (that is, or ), the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
   RefNumber?: string;
+}
+
+export interface TxnDelRq {
+  /** The type of transaction to be deleted. */
+  TxnDelType: TxnDelType;
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests. Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID: string;
+}
+
+export interface TxnDelRs {
+  /** The type of transaction to be deleted. */
+  TxnDelType?: TxnDelType;
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests. Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID?: string;
+  /** The time when this list or transaction object was deleted. */
+  TimeDeleted?: string;
+  /** A string of characters that refers to this transaction and that can be arbitrarily changed by the QuickBooks user. In a `BillPaymentCheckAdd` request, if you want to set the check number, use `RefNumber`.`Note` (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request (that is, or ), the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
+  RefNumber?: string;
+  ErrorRecovery?: ErrorRecovery;
 }
 
 export type TxnDelType =
@@ -14445,6 +14565,45 @@ export type TxnTypeFilter =
   | "Transfer"
   | "VendorCredit"
   | "YTDAdjustment";
+
+export interface TxnVoidRq {
+  /** The type of transaction being voided. */
+  TxnVoidType: TxnVoidType;
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests. Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID: string;
+}
+
+export interface TxnVoidRs {
+  /** The type of transaction being voided. */
+  TxnVoidType?: TxnVoidType;
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests. Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID?: string;
+  /** Time the object was created. */
+  TimeCreated?: string;
+  /** Time the object was last modified. */
+  TimeModified?: string;
+  /** A string of characters that refers to this transaction and that can be arbitrarily changed by the QuickBooks user. In a `BillPaymentCheckAdd` request, if you want to set the check number, use `RefNumber`.`Note` (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request (that is, or ), the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
+  RefNumber?: string;
+  ErrorRecovery?: ErrorRecovery;
+}
+
+export type TxnVoidType =
+  | "ARRefundCreditCard"
+  | "Bill"
+  | "BillPaymentCheck"
+  | "BillPaymentCreditCard"
+  | "Charge"
+  | "Check"
+  | "CreditCardCharge"
+  | "CreditCardCredit"
+  | "CreditMemo"
+  | "Deposit"
+  | "InventoryAdjustment"
+  | "Invoice"
+  | "ItemReceipt"
+  | "JournalEntry"
+  | "SalesReceipt"
+  | "VendorCredit";
 
 export interface UnitOfMeasureSetRef {
   /** Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
