@@ -7,9 +7,10 @@ export function generateMockIntegrationConnection(
   return {
     id: generateUniqueId("int_conn"),
     objectType: "integration_connection",
+    createdAt: new Date().toISOString(),
     endUserId: generateUniqueId("end_usr"),
     integrationSlug: "quickbooks_desktop",
-    createdAt: new Date().toISOString(),
+    lastRequestAt: null,
     ...overrides,
   };
 }

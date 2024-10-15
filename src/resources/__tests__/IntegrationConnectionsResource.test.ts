@@ -24,8 +24,8 @@ describe("IntegrationConnectionsResource", () => {
     let result: ApiListResponse<IntegrationConnection>;
 
     beforeAll(async () => {
-      mockAdapter.onGet("/integration_connections").reply(200, {
-        url: "/v1/integration_connections",
+      mockAdapter.onGet("/integration-connections").reply(200, {
+        url: "/v1/integration-connections",
         objectType: "list",
         data: integrationConnections,
       });
@@ -35,14 +35,14 @@ describe("IntegrationConnectionsResource", () => {
     it("sends the correct request", () => {
       expect(mockAdapter.history["get"]?.[0]).toMatchObject({
         method: "get",
-        url: "/integration_connections",
+        url: "/integration-connections",
         data: undefined,
       });
     });
 
     it("returns all IntegrationConnections", () => {
       expect(result).toStrictEqual({
-        url: "/v1/integration_connections",
+        url: "/v1/integration-connections",
         objectType: "list",
         data: integrationConnections,
       });
@@ -55,7 +55,7 @@ describe("IntegrationConnectionsResource", () => {
 
     beforeAll(async () => {
       mockAdapter
-        .onGet(`/integration_connections/${integrationConnection.id}`)
+        .onGet(`/integration-connections/${integrationConnection.id}`)
         .reply(200, integrationConnection);
       result = await integrationConnectionsResource.retrieve(
         integrationConnection.id,
@@ -65,7 +65,7 @@ describe("IntegrationConnectionsResource", () => {
     it("sends the correct request", () => {
       expect(mockAdapter.history["get"]?.[0]).toMatchObject({
         method: "get",
-        url: `/integration_connections/${integrationConnection.id}`,
+        url: `/integration-connections/${integrationConnection.id}`,
         data: undefined,
       });
     });

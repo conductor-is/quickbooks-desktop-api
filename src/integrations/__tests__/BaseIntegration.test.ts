@@ -37,7 +37,7 @@ describe("BaseIntegration", () => {
       expect.assertions(2);
       mockAdapter
         .onPost(
-          `/end_users/${endUser.id}/request/${integrationConnection.integrationSlug}`,
+          `/end-users/${endUser.id}/request/${integrationConnection.integrationSlug}`,
           requestPayload,
         )
         .reply(200, expectedResponse);
@@ -51,7 +51,7 @@ describe("BaseIntegration", () => {
 
       expect(mockAdapter.history["post"]?.at(-1)).toMatchObject({
         method: "post",
-        url: `/end_users/${endUser.id}/request/${integrationConnection.integrationSlug}`,
+        url: `/end-users/${endUser.id}/request/${integrationConnection.integrationSlug}`,
         data: JSON.stringify(requestPayload),
       });
       expect(result).toStrictEqual(expectedResponse);
@@ -72,7 +72,7 @@ describe("BaseIntegration", () => {
       };
       mockAdapter
         .onPost(
-          `/end_users/${endUser.id}/request/${integrationConnection.integrationSlug}`,
+          `/end-users/${endUser.id}/request/${integrationConnection.integrationSlug}`,
           requestPayload,
         )
         .reply(serverError.error.httpStatusCode, serverError);

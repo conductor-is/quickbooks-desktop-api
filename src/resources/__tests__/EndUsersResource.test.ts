@@ -26,8 +26,8 @@ describe("EndUsersResource", () => {
     let result: ApiListResponse<EndUser>;
 
     beforeAll(async () => {
-      mockAdapter.onGet("/end_users").reply(200, {
-        url: "/v1/end_users",
+      mockAdapter.onGet("/end-users").reply(200, {
+        url: "/v1/end-users",
         objectType: "list",
         data: endUsers,
       });
@@ -37,14 +37,14 @@ describe("EndUsersResource", () => {
     it("sends the correct request", () => {
       expect(mockAdapter.history["get"]?.[0]).toMatchObject({
         method: "get",
-        url: "/end_users",
+        url: "/end-users",
         data: undefined,
       });
     });
 
-    it("returns all end_users", () => {
+    it("returns all end-users", () => {
       expect(result).toStrictEqual({
-        url: "/v1/end_users",
+        url: "/v1/end-users",
         objectType: "list",
         data: endUsers,
       });
@@ -61,14 +61,14 @@ describe("EndUsersResource", () => {
     let result: EndUser;
 
     beforeAll(async () => {
-      mockAdapter.onPost("/end_users", endUserCreateInput).reply(200, endUser);
+      mockAdapter.onPost("/end-users", endUserCreateInput).reply(200, endUser);
       result = await endUsersResource.create(endUserCreateInput);
     });
 
     it("sends the correct request", () => {
       expect(mockAdapter.history["post"]?.[0]).toMatchObject({
         method: "post",
-        url: "/end_users",
+        url: "/end-users",
         data: JSON.stringify(endUserCreateInput),
       });
     });
@@ -83,14 +83,14 @@ describe("EndUsersResource", () => {
     let result: EndUser;
 
     beforeAll(async () => {
-      mockAdapter.onGet(`/end_users/${endUser.id}`).reply(200, endUser);
+      mockAdapter.onGet(`/end-users/${endUser.id}`).reply(200, endUser);
       result = await endUsersResource.retrieve(endUser.id);
     });
 
     it("sends the correct request", () => {
       expect(mockAdapter.history["get"]?.[0]).toMatchObject({
         method: "get",
-        url: `/end_users/${endUser.id}`,
+        url: `/end-users/${endUser.id}`,
         data: undefined,
       });
     });
@@ -110,7 +110,7 @@ describe("EndUsersResource", () => {
     beforeAll(async () => {
       mockAdapter
         .onGet(
-          `/end_users/${integrationConnection.endUserId}/ping/${integrationConnection.integrationSlug}`,
+          `/end-users/${integrationConnection.endUserId}/ping/${integrationConnection.integrationSlug}`,
         )
         .reply(200, pingResult);
       result = await endUsersResource.ping(
@@ -122,7 +122,7 @@ describe("EndUsersResource", () => {
     it("sends the correct request", () => {
       expect(mockAdapter.history["get"]?.[0]).toMatchObject({
         method: "get",
-        url: `/end_users/${integrationConnection.endUserId}/ping/${integrationConnection.integrationSlug}`,
+        url: `/end-users/${integrationConnection.endUserId}/ping/${integrationConnection.integrationSlug}`,
         data: undefined,
       });
     });

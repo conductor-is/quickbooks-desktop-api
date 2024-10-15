@@ -16,7 +16,7 @@ export default abstract class BaseIntegration {
     payload: Record<string, unknown>,
   ): Promise<object> {
     const { data } = await this.httpClient.post<object>(
-      `/end_users/${endUserId}/request/${integrationSlug}`,
+      `/end-users/${endUserId}/request/${integrationSlug}`,
       payload,
     );
     return data;

@@ -11,6 +11,7 @@ export function generateMockAuthSession(
   return {
     id: generateUniqueId("auth_sess"),
     objectType: "auth_session",
+    createdAt: new Date().toISOString(),
     endUserId: generateUniqueId("end_usr"),
     clientSecret,
     authFlowUrl: `https://conductor.is/qbd/${clientSecret}?key=${generateUniqueId(

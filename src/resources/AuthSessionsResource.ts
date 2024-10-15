@@ -10,6 +10,10 @@ export interface AuthSession {
    */
   readonly objectType: "auth_session";
   /**
+   * The date and time when this object was created.
+   */
+  readonly createdAt: string;
+  /**
    * The ID of the EndUser for whom to create an IntegrationConnection.
    */
   readonly endUserId: string;
@@ -30,7 +34,7 @@ export interface AuthSession {
    */
   readonly expiresAt: string;
   /**
-   * The URL to which Conductor will redirect the end-user to return to your app
+   * The URL to which Conductor will redirect the user to return to your app
    * after they complete the authentication flow. If `undefined`, their browser
    * tab will close instead.
    */
@@ -62,7 +66,7 @@ export interface AuthSessionCreateInput {
 }
 
 export default class AuthSessionsResource extends BaseResource {
-  protected readonly ROUTE = "/auth_sessions";
+  protected readonly ROUTE = "/auth-sessions";
 
   /**
    * Creates an AuthSession. Pass the returned session’s `authFlowUrl` to the

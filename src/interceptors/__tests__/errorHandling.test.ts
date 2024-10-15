@@ -34,7 +34,7 @@ describe("error handling interceptors", () => {
       },
     };
     mockAdapter
-      .onGet("/end_users")
+      .onGet("/end-users")
       .reply(serverError.error.httpStatusCode, serverError, responseHeaders);
     await expectToRejectWithConductorError(
       client.endUsers.list(),
@@ -62,7 +62,7 @@ describe("error handling interceptors", () => {
       },
     };
     mockAdapter
-      .onGet("/end_users")
+      .onGet("/end-users")
       .reply(serverError.error.httpStatusCode, serverError, responseHeaders);
     await expectToRejectWithConductorError(
       client.endUsers.list(),
@@ -81,7 +81,7 @@ describe("error handling interceptors", () => {
       "Conductor-Request-Id": "abc",
     };
     mockAdapter
-      .onGet("/end_users")
+      .onGet("/end-users")
       .reply(HttpStatusCode.InternalServerError, invalidError, responseHeaders);
     await expectToRejectWithConductorError(
       client.endUsers.list(),
@@ -104,7 +104,7 @@ describe("error handling interceptors", () => {
       "CONDUCTOR-REQUEST-ID": "abc",
     };
     mockAdapter
-      .onGet("/end_users")
+      .onGet("/end-users")
       .reply(HttpStatusCode.InternalServerError, invalidError, responseHeaders);
     await expectToRejectWithConductorError(
       client.endUsers.list(),
@@ -121,7 +121,7 @@ describe("error handling interceptors", () => {
 
   it("handles request timeouts", async () => {
     expect.assertions(2);
-    mockAdapter.onGet("/end_users").timeout();
+    mockAdapter.onGet("/end-users").timeout();
     await expectToRejectWithConductorError(
       client.endUsers.list(),
       new ConductorConnectionError({
@@ -134,7 +134,7 @@ describe("error handling interceptors", () => {
 
   it("handles request timeouts with undefined `error.config.timeout`", async () => {
     expect.assertions(2);
-    mockAdapter.onGet("/end_users").reply(() => {
+    mockAdapter.onGet("/end-users").reply(() => {
       // We do not set `error.config` to ensure it is `undefined`.
       throw new AxiosError("Request aborted", AxiosError.ECONNABORTED);
     });
@@ -150,7 +150,7 @@ describe("error handling interceptors", () => {
 
   it("handles network connection errors", async () => {
     expect.assertions(2);
-    mockAdapter.onGet("/end_users").networkError();
+    mockAdapter.onGet("/end-users").networkError();
     await expectToRejectWithConductorError(
       client.endUsers.list(),
       new ConductorConnectionError({
@@ -164,7 +164,7 @@ describe("error handling interceptors", () => {
   it("handles network connection errors without error messages", async () => {
     expect.assertions(2);
     const errorCode = "ECONNREFUSED";
-    mockAdapter.onGet("/end_users").reply(() => {
+    mockAdapter.onGet("/end-users").reply(() => {
       throw new AxiosError("", errorCode);
     });
     await expectToRejectWithConductorError(

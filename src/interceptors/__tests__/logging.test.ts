@@ -23,7 +23,7 @@ describe("logging interceptors", () => {
 
     it("logs GET requests", async () => {
       expect.assertions(2);
-      mockAdapter.onGet("/end_users").reply(200, [generateMockEndUser()]);
+      mockAdapter.onGet("/end-users").reply(200, [generateMockEndUser()]);
 
       jest.spyOn(console, "log").mockImplementation();
       await client.endUsers.list();
@@ -35,7 +35,7 @@ describe("logging interceptors", () => {
         "Conductor request:",
         stringifyForLogs({
           method: "GET",
-          url: "http://localhost:4000/v1/end_users",
+          url: "http://localhost:4000/v1/end-users",
           headers: { Authorization: "BEARER sk_live_************" },
         }),
       );
@@ -49,7 +49,7 @@ describe("logging interceptors", () => {
         sourceId: endUser.sourceId,
         email: endUser.email,
       });
-      mockAdapter.onPost("/end_users").reply(200, endUser);
+      mockAdapter.onPost("/end-users").reply(200, endUser);
 
       jest.spyOn(console, "log").mockImplementation();
       await client.endUsers.create(endUserInput);
@@ -61,7 +61,7 @@ describe("logging interceptors", () => {
         "Conductor request:",
         stringifyForLogs({
           method: "POST",
-          url: "http://localhost:4000/v1/end_users",
+          url: "http://localhost:4000/v1/end-users",
           body: endUserInput,
           headers: { Authorization: "BEARER sk_live_************" },
         }),
@@ -71,7 +71,7 @@ describe("logging interceptors", () => {
     it("logs responses with duration", async () => {
       expect.assertions(3);
       const expectedResponse = [generateMockEndUser()];
-      mockAdapter.onGet("/end_users").reply(200, expectedResponse);
+      mockAdapter.onGet("/end-users").reply(200, expectedResponse);
 
       const durationMs = 10;
       jest
@@ -93,7 +93,7 @@ describe("logging interceptors", () => {
           data: expectedResponse,
           request: {
             method: "GET",
-            url: "http://localhost:4000/v1/end_users",
+            url: "http://localhost:4000/v1/end-users",
             headers: { Authorization: "BEARER sk_live_************" },
           },
         }),
@@ -102,7 +102,7 @@ describe("logging interceptors", () => {
 
     it("logs errors", async () => {
       expect.assertions(3);
-      mockAdapter.onGet("/end_users").networkError();
+      mockAdapter.onGet("/end-users").networkError();
 
       jest.spyOn(console, "log").mockImplementation();
       const conductorError = await client.endUsers
@@ -126,7 +126,7 @@ describe("logging interceptors", () => {
     it("does not log requests or responses", async () => {
       expect.assertions(2);
       const expectedResponse = [generateMockEndUser()];
-      mockAdapter.onGet("/end_users").reply(200, expectedResponse);
+      mockAdapter.onGet("/end-users").reply(200, expectedResponse);
 
       jest.spyOn(console, "log").mockImplementation();
       const response = await client.endUsers.list();
@@ -137,7 +137,7 @@ describe("logging interceptors", () => {
 
     it("does not log errors", async () => {
       expect.assertions(2);
-      mockAdapter.onGet("/end_users").networkError();
+      mockAdapter.onGet("/end-users").networkError();
 
       jest.spyOn(console, "log").mockImplementation();
       await expect(client.endUsers.list()).rejects.toBeInstanceOf(
@@ -166,19 +166,19 @@ describe("createRequestLogObject", () => {
   it("handles a config with `baseUrl` and `url`", () => {
     const config: AxiosRequestConfig = {
       baseURL: "https://api.example.com",
-      url: "/end_users",
+      url: "/end-users",
     };
     expect(createRequestLogObject(config)).toStrictEqual({
-      url: "https://api.example.com/end_users",
+      url: "https://api.example.com/end-users",
     });
   });
 
   it("handles a config with `url` and no `baseUrl`", () => {
     const config: AxiosRequestConfig = {
-      url: "/end_users",
+      url: "/end-users",
     };
     expect(createRequestLogObject(config)).toStrictEqual({
-      url: "/end_users",
+      url: "/end-users",
     });
   });
 
@@ -225,7 +225,7 @@ describe("createRequestLogObject", () => {
     const config: AxiosRequestConfig = {
       method: "post",
       baseURL: "https://api.example.com",
-      url: "/end_users",
+      url: "/end-users",
       data: {
         name: "John",
         age: 30,
@@ -237,7 +237,7 @@ describe("createRequestLogObject", () => {
     };
     expect(createRequestLogObject(config)).toStrictEqual({
       method: "POST",
-      url: "https://api.example.com/end_users",
+      url: "https://api.example.com/end-users",
       body: {
         name: "John",
         age: 30,

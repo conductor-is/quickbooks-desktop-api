@@ -30,7 +30,7 @@ describe("AuthSessionsResource", () => {
 
     beforeAll(async () => {
       mockAdapter
-        .onPost("/auth_sessions", authSessionCreateInput)
+        .onPost("/auth-sessions", authSessionCreateInput)
         .reply(200, authSession);
       result = await authSessionsResource.create(authSessionCreateInput);
     });
@@ -38,7 +38,7 @@ describe("AuthSessionsResource", () => {
     it("sends the correct request", () => {
       expect(mockAdapter.history["post"]?.[0]).toMatchObject({
         method: "post",
-        url: "/auth_sessions",
+        url: "/auth-sessions",
         data: JSON.stringify(authSessionCreateInput),
       });
     });
@@ -54,7 +54,7 @@ describe("AuthSessionsResource", () => {
 
     beforeAll(async () => {
       mockAdapter
-        .onGet(`/auth_sessions/${authSession.id}`)
+        .onGet(`/auth-sessions/${authSession.id}`)
         .reply(200, authSession);
       result = await authSessionsResource.retrieve(authSession.id);
     });
@@ -62,7 +62,7 @@ describe("AuthSessionsResource", () => {
     it("sends the correct request", () => {
       expect(mockAdapter.history["get"]?.[0]).toMatchObject({
         method: "get",
-        url: `/auth_sessions/${authSession.id}`,
+        url: `/auth-sessions/${authSession.id}`,
         data: undefined,
       });
     });

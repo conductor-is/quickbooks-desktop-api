@@ -1,5 +1,8 @@
 import BaseResource from "@conductor/client-node/resources/BaseResource";
-import type { IntegrationSlug } from "@conductor/client-node/resources/IntegrationConnectionsResource";
+import type {
+  IntegrationConnection,
+  IntegrationSlug,
+} from "@conductor/client-node/resources/IntegrationConnectionsResource";
 import type { ApiListResponse } from "@conductor/client-node/resources/base";
 
 export interface EndUser {
@@ -14,24 +17,28 @@ export interface EndUser {
    */
   readonly objectType: "end_user";
   /**
-   * Your end-user's company name that will be shown elsewhere in Conductor.
-   */
-  readonly companyName: string;
-  /**
-   * A unique identifier for your end-user from your system. Maps users between
-   * your database and Conductor. Must be unique for each user. If you have only
-   * one user, you may use any string value.
-   */
-  readonly sourceId: string;
-  /**
-   * Your end-user's email address for identification purposes. Setting this
-   * field will not cause any emails to be sent.
-   */
-  readonly email: string;
-  /**
    * The time at which the object was created.
    */
   readonly createdAt: string;
+  /**
+   * The EndUser's company name that will be shown elsewhere in Conductor.
+   */
+  readonly companyName: string;
+  /**
+   * The EndUser's unique identifier from your system. Maps users between your
+   * database and Conductor. Must be unique for each user. If you have only one
+   * user, you may use any string value.
+   */
+  readonly sourceId: string;
+  /**
+   * The EndUser's email address for identification purposes. Setting this field
+   * will not cause any emails to be sent.
+   */
+  readonly email: string;
+  /**
+   * The EndUser's IntegrationConnections.
+   */
+  readonly integrationConnections: IntegrationConnection[];
 }
 
 export type EndUserCreateInput = Pick<
@@ -47,7 +54,7 @@ export interface EndUserPingOutput {
 }
 
 export default class EndUsersResource extends BaseResource {
-  protected readonly ROUTE = "/end_users";
+  protected readonly ROUTE = "/end-users";
 
   /**
    * Returns a list of your EndUsers.

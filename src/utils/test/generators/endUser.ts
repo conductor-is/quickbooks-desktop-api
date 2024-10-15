@@ -8,10 +8,11 @@ export function generateMockEndUser(overrides?: Partial<EndUser>): EndUser {
   return {
     id: generateUniqueId("end_usr"),
     objectType: "end_user",
+    createdAt: new Date().toISOString(),
     companyName: "Test Company",
     sourceId: generateUniqueId("src"),
     email: "hi@conductor.is",
-    createdAt: new Date().toISOString(),
+    integrationConnections: [],
     ...overrides,
   };
 }

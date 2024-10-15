@@ -6,7 +6,7 @@
       <img alt="Conductor logo" src="https://github.com/conductor-is/quickbooks-desktop-api/assets/170023/d67464b8-53a7-4d33-afeb-05a2efde1fa8" width="325">
     </picture>
   </a>
-  <h3>QuickBooks Desktop API for Node.js, TypeScript, and REST</h3>
+  <h3>QuickBooks Desktop API for Node.js/TypeScript, Python, and REST</h3>
   <a href="https://docs.conductor.is/overview/quickstart">Quickstart</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://conductor.is">Website</a>
@@ -27,7 +27,7 @@
 
 ## What is Conductor?
 
-Conductor is a real-time, fully-typed API for **QuickBooks Desktop** (sometimes called QuickBooks Enterprise), available via TypeScript, Node.js, and REST. In just a few lines, get real-time access to fetch, create, or update [_any_ QuickBooks Desktop object type](https://docs.conductor.is/qbd/api#supported-object-types) and receive a fully-typed response. Check out [the documentation](https://docs.conductor.is) to get started.
+Conductor is a real-time, fully-typed API for **QuickBooks Desktop** (sometimes called QuickBooks Enterprise), available via Node.js/TypeScript, Python, and REST. In just a few lines, get real-time access to fetch, create, or update [_any_ QuickBooks Desktop object type](https://docs.conductor.is/qbd/api#supported-object-types) and receive a fully-typed response. Check out [the documentation](https://docs.conductor.is) to get started.
 
 Conductor, the company, is building a data integration platform for vertical SaaS companies, starting with QuickBooks Desktop. Our team has spent over a decade building companies, scaling vast software systems, and obsessing over quality.
 

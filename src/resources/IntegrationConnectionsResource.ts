@@ -13,6 +13,10 @@ export interface IntegrationConnection {
    */
   readonly objectType: "integration_connection";
   /**
+   * The time at which the object was created.
+   */
+  readonly createdAt: string;
+  /**
    * The ID of the EndUser who owns this IntegrationConnection.
    */
   readonly endUserId: string;
@@ -22,9 +26,9 @@ export interface IntegrationConnection {
    */
   readonly integrationSlug: IntegrationSlug;
   /**
-   * The time at which the object was created.
+   * The date and time of your last API request to this IntegrationConnection.
    */
-  readonly createdAt: string;
+  readonly lastRequestAt: string | null;
 }
 
 export interface IntegrationConnectionPingOutput {
@@ -32,7 +36,7 @@ export interface IntegrationConnectionPingOutput {
 }
 
 export default class IntegrationConnectionsResource extends BaseResource {
-  protected readonly ROUTE = "/integration_connections";
+  protected readonly ROUTE = "/integration-connections";
 
   /**
    * Returns a list of all IntegrationConnections of all your EndUsers.
