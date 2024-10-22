@@ -47,16 +47,4 @@ export default class IntegrationConnectionsResource extends BaseResource {
     >(this.ROUTE);
     return data;
   }
-
-  /**
-   * Retrieves the specified IntegrationConnection.
-   */
-  public async retrieve(
-    id: IntegrationConnection["id"],
-  ): Promise<IntegrationConnection> {
-    const { data } = await this.httpClient.get<IntegrationConnection>(
-      `${this.ROUTE}/${id}`,
-    );
-    return data;
-  }
 }

@@ -4307,61 +4307,73 @@ export interface DepositAddRs {
   ErrorRecovery?: ErrorRecovery;
 }
 
-export interface DepositLineAdd {
-  /** For the `PaymentTxnID`, use either of these two values:A `TxnID` value exactly as it is returned by the `ReceivePaymentToDepositQuery` request, or A `TxnID` value exactly as it is returned in a `ReceivePaymentAdd` response. If you do not include a `PaymentTxnLineID` and include a `PaymentTxnID` for a transaction that includes payment lines, only the first payment line from that transaction will be deposited. */
-  PaymentTxnID: string;
-  /** For the `PaymentTxnLineID`, use a `TxnLineID` value exactly as it has been returned by the `ReceivePaymentToDepositQuery` request. If you do not include a `PaymentTxnLineID` and include a `PaymentTxnID` for a transaction that includes payment lines, only the first payment line from that transaction will be deposited. */
-  PaymentTxnLineID?: string;
-  /** Depost line memo additional information. */
-  OverrideMemo?: string;
-  /** Deposit line check number. */
-  OverrideCheckNumber?: string;
-  /** Deposit line class reference. */
-  OverrideClassRef?: OverrideClassRef;
-  /** A QuickBooks “entity” is a customer, vendor, employee, or person on the QuickBooks “other names” list. Special cases to note: In a `BillToPayQuery` message, `EntityRef` refers to the vendor name.In `JournalCreditLine` and `JournalDebitLine` messages for A/R accounts, `EntityRef` must refer to a customer, or else the transaction will not be recorded. For A/P accounts the `EntityRef` must refer to a vendor, or else the transaction will not be recorded.In a `TimeTracking` message, `EntityRef` cannot refer to a customer, only to an employee, vendor, or person on the “other names” list whose time is being tracked. */
-  EntityRef?: EntityRef;
-  /** The Account list is the company file’s list of accounts. An `AccountRef` aggregate refers to one of these accounts. (If an `AccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.) Special cases to note:In a Check message, `AccountRef` refers to the account from which the funds are being drawn for this check, for example, Checking or Savings.In an `ExpenseLineAdd` message, you must include `AccountRef` if the “Require accounts” check box is selected in the QuickBooks Accounting preferences. (It is selected by default.) In a `CreditCardCredit` message, `AccountRef` refers to the bank account or credit card account to which the credit is applied.In a `CreditCardCharge` message, `AccountRef` refers to the bank or credit card company to whom money is owed. How do you increase and decrease amounts in bank accounts? The following requests increase the balance in a bank account: Deposit Add `ReceivePaymentAdd` Journal Entry Add Sales `ReceiptAdd` The following requests decrease the balance in a bank account: `CheckAdd` Bill `PaymentCheckAdd` `JournalEntryAdd` */
-  AccountRef: AccountRef;
-  /** Additional information about this deposit line. */
-  Memo?: string;
-  /** The check number of a check that a QuickBooks user writes or receives from someone else. */
-  CheckNumber?: string;
-  /** A customer’s payment method, for example, cash, check, or Master Card. A `PaymentMethodRef` aggregate refers to an item on the `PaymentMethod` list. In a request, if a `PaymentMethodRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. In a `SalesReceiptAdd`, `ReceivePaymentAdd`, or `ARRefundCreditCard` request that contains credit card transaction data supplied from QBMS transaction responses, you must specify the payment method, and the payment method must be a credit card type. */
-  PaymentMethodRef?: PaymentMethodRef;
-  /** Classes can be used to separate transactions into meaningful categories. (For example, transactions could be classified according to department, business location, or type of work.) In QuickBooks, class tracking is off by default. A `ClassRef` aggregate refers to one of these named classes. For example, in a `TimeTracking` message, `ClassRef` refers to the QuickBooks class into which the timed activity falls. If a `ClassRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. In an `InvoiceAdd` request, if you specify a `ClassRef` for the whole invoice, that same `ClassRef` is automatically used in the line items. If you want to clear that (that is, have NO `ClassRef` for the line item, you can clear it in the line item by simply not specifying it in the line item. */
-  ClassRef?: ClassRef;
-  /** A monetary amount. */
-  Amount?: string;
-}
+export type DepositLineAdd =
+  | {
+      /** For the `PaymentTxnID`, use either of these two values:A `TxnID` value exactly as it is returned by the `ReceivePaymentToDepositQuery` request, or A `TxnID` value exactly as it is returned in a `ReceivePaymentAdd` response. If you do not include a `PaymentTxnLineID` and include a `PaymentTxnID` for a transaction that includes payment lines, only the first payment line from that transaction will be deposited. */
+      PaymentTxnID: string;
+      AccountRef?: never;
+      /** For the `PaymentTxnLineID`, use a `TxnLineID` value exactly as it has been returned by the `ReceivePaymentToDepositQuery` request. If you do not include a `PaymentTxnLineID` and include a `PaymentTxnID` for a transaction that includes payment lines, only the first payment line from that transaction will be deposited. */
+      PaymentTxnLineID?: string;
+      /** Depost line memo additional information. */
+      OverrideMemo?: string;
+      /** Deposit line check number. */
+      OverrideCheckNumber?: string;
+      /** Deposit line class reference. */
+      OverrideClassRef?: OverrideClassRef;
+    }
+  | {
+      /** A QuickBooks “entity” is a customer, vendor, employee, or person on the QuickBooks “other names” list. Special cases to note: In a `BillToPayQuery` message, `EntityRef` refers to the vendor name.In `JournalCreditLine` and `JournalDebitLine` messages for A/R accounts, `EntityRef` must refer to a customer, or else the transaction will not be recorded. For A/P accounts the `EntityRef` must refer to a vendor, or else the transaction will not be recorded.In a `TimeTracking` message, `EntityRef` cannot refer to a customer, only to an employee, vendor, or person on the “other names” list whose time is being tracked. */
+      EntityRef?: EntityRef;
+      /** The Account list is the company file’s list of accounts. An `AccountRef` aggregate refers to one of these accounts. (If an `AccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.) Special cases to note:In a Check message, `AccountRef` refers to the account from which the funds are being drawn for this check, for example, Checking or Savings.In an `ExpenseLineAdd` message, you must include `AccountRef` if the “Require accounts” check box is selected in the QuickBooks Accounting preferences. (It is selected by default.) In a `CreditCardCredit` message, `AccountRef` refers to the bank account or credit card account to which the credit is applied.In a `CreditCardCharge` message, `AccountRef` refers to the bank or credit card company to whom money is owed. How do you increase and decrease amounts in bank accounts? The following requests increase the balance in a bank account: Deposit Add `ReceivePaymentAdd` Journal Entry Add Sales `ReceiptAdd` The following requests decrease the balance in a bank account: `CheckAdd` Bill `PaymentCheckAdd` `JournalEntryAdd` */
+      AccountRef: AccountRef;
+      PaymentTxnID?: never;
+      /** Additional information about this deposit line. */
+      Memo?: string;
+      /** The check number of a check that a QuickBooks user writes or receives from someone else. */
+      CheckNumber?: string;
+      /** A customer’s payment method, for example, cash, check, or Master Card. A `PaymentMethodRef` aggregate refers to an item on the `PaymentMethod` list. In a request, if a `PaymentMethodRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. In a `SalesReceiptAdd`, `ReceivePaymentAdd`, or `ARRefundCreditCard` request that contains credit card transaction data supplied from QBMS transaction responses, you must specify the payment method, and the payment method must be a credit card type. */
+      PaymentMethodRef?: PaymentMethodRef;
+      /** Classes can be used to separate transactions into meaningful categories. (For example, transactions could be classified according to department, business location, or type of work.) In QuickBooks, class tracking is off by default. A `ClassRef` aggregate refers to one of these named classes. For example, in a `TimeTracking` message, `ClassRef` refers to the QuickBooks class into which the timed activity falls. If a `ClassRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. In an `InvoiceAdd` request, if you specify a `ClassRef` for the whole invoice, that same `ClassRef` is automatically used in the line items. If you want to clear that (that is, have NO `ClassRef` for the line item, you can clear it in the line item by simply not specifying it in the line item. */
+      ClassRef?: ClassRef;
+      /** A monetary amount. */
+      Amount?: string;
+    };
 
-export interface DepositLineMod {
+export type DepositLineMod = {
   /** Identification number of the transaction line. (`TxnLineID` is supported as of v2.0 of the SDK. With qbXML v1.0 and v1.1, `TxnLineID` is always returned as zero.) If you need to add a new transaction line in a transaction Mod request, you can do so by setting the `TxnLineID` to -1. */
   TxnLineID: string;
-  /** For the `PaymentTxnID`, use either of these two values:A `TxnID` value exactly as it is returned by the `ReceivePaymentToDepositQuery` request, or A `TxnID` value exactly as it is returned in a `ReceivePaymentAdd` response. If you do not include a `PaymentTxnLineID` and include a `PaymentTxnID` for a transaction that includes payment lines, only the first payment line from that transaction will be deposited. */
-  PaymentTxnID: string;
-  /** For the `PaymentTxnLineID`, use a `TxnLineID` value exactly as it has been returned by the `ReceivePaymentToDepositQuery` request. If you do not include a `PaymentTxnLineID` and include a `PaymentTxnID` for a transaction that includes payment lines, only the first payment line from that transaction will be deposited. */
-  PaymentTxnLineID?: string;
-  /** Depost line memo additional information. */
-  OverrideMemo?: string;
-  /** Deposit line check number. */
-  OverrideCheckNumber?: string;
-  /** Deposit line class reference. */
-  OverrideClassRef?: OverrideClassRef;
-  /** A QuickBooks “entity” is a customer, vendor, employee, or person on the QuickBooks “other names” list. Special cases to note: In a `BillToPayQuery` message, `EntityRef` refers to the vendor name.In `JournalCreditLine` and `JournalDebitLine` messages for A/R accounts, `EntityRef` must refer to a customer, or else the transaction will not be recorded. For A/P accounts the `EntityRef` must refer to a vendor, or else the transaction will not be recorded.In a `TimeTracking` message, `EntityRef` cannot refer to a customer, only to an employee, vendor, or person on the “other names” list whose time is being tracked. */
-  EntityRef?: EntityRef;
-  /** The Account list is the company file’s list of accounts. An `AccountRef` aggregate refers to one of these accounts. (If an `AccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.) Special cases to note:In a Check message, `AccountRef` refers to the account from which the funds are being drawn for this check, for example, Checking or Savings.In an `ExpenseLineAdd` message, you must include `AccountRef` if the “Require accounts” check box is selected in the QuickBooks Accounting preferences. (It is selected by default.) In a `CreditCardCredit` message, `AccountRef` refers to the bank account or credit card account to which the credit is applied.In a `CreditCardCharge` message, `AccountRef` refers to the bank or credit card company to whom money is owed. How do you increase and decrease amounts in bank accounts? The following requests increase the balance in a bank account: Deposit Add `ReceivePaymentAdd` Journal Entry Add Sales `ReceiptAdd` The following requests decrease the balance in a bank account: `CheckAdd` Bill `PaymentCheckAdd` `JournalEntryAdd` */
-  AccountRef?: AccountRef;
-  /** Additional information about this deposit line. */
-  Memo?: string;
-  /** The check number of a check that a QuickBooks user writes or receives from someone else. */
-  CheckNumber?: string;
-  /** A customer’s payment method, for example, cash, check, or Master Card. A `PaymentMethodRef` aggregate refers to an item on the `PaymentMethod` list. In a request, if a `PaymentMethodRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. In a `SalesReceiptAdd`, `ReceivePaymentAdd`, or `ARRefundCreditCard` request that contains credit card transaction data supplied from QBMS transaction responses, you must specify the payment method, and the payment method must be a credit card type. */
-  PaymentMethodRef?: PaymentMethodRef;
-  /** Classes can be used to separate transactions into meaningful categories. (For example, transactions could be classified according to department, business location, or type of work.) In QuickBooks, class tracking is off by default. A `ClassRef` aggregate refers to one of these named classes. For example, in a `TimeTracking` message, `ClassRef` refers to the QuickBooks class into which the timed activity falls. If a `ClassRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. In an `InvoiceAdd` request, if you specify a `ClassRef` for the whole invoice, that same `ClassRef` is automatically used in the line items. If you want to clear that (that is, have NO `ClassRef` for the line item, you can clear it in the line item by simply not specifying it in the line item. */
-  ClassRef?: ClassRef;
-  /** A monetary amount. */
-  Amount?: string;
-}
+} & (
+  | {
+      /** For the `PaymentTxnID`, use either of these two values:A `TxnID` value exactly as it is returned by the `ReceivePaymentToDepositQuery` request, or A `TxnID` value exactly as it is returned in a `ReceivePaymentAdd` response. If you do not include a `PaymentTxnLineID` and include a `PaymentTxnID` for a transaction that includes payment lines, only the first payment line from that transaction will be deposited. */
+      PaymentTxnID?: string;
+      AccountRef?: never;
+      /** For the `PaymentTxnLineID`, use a `TxnLineID` value exactly as it has been returned by the `ReceivePaymentToDepositQuery` request. If you do not include a `PaymentTxnLineID` and include a `PaymentTxnID` for a transaction that includes payment lines, only the first payment line from that transaction will be deposited. */
+      PaymentTxnLineID?: string;
+      /** Depost line memo additional information. */
+      OverrideMemo?: string;
+      /** Deposit line check number. */
+      OverrideCheckNumber?: string;
+      /** Deposit line class reference. */
+      OverrideClassRef?: OverrideClassRef;
+    }
+  | {
+      /** A QuickBooks “entity” is a customer, vendor, employee, or person on the QuickBooks “other names” list. Special cases to note: In a `BillToPayQuery` message, `EntityRef` refers to the vendor name.In `JournalCreditLine` and `JournalDebitLine` messages for A/R accounts, `EntityRef` must refer to a customer, or else the transaction will not be recorded. For A/P accounts the `EntityRef` must refer to a vendor, or else the transaction will not be recorded.In a `TimeTracking` message, `EntityRef` cannot refer to a customer, only to an employee, vendor, or person on the “other names” list whose time is being tracked. */
+      EntityRef?: EntityRef;
+      /** The Account list is the company file’s list of accounts. An `AccountRef` aggregate refers to one of these accounts. (If an `AccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.) Special cases to note:In a Check message, `AccountRef` refers to the account from which the funds are being drawn for this check, for example, Checking or Savings.In an `ExpenseLineAdd` message, you must include `AccountRef` if the “Require accounts” check box is selected in the QuickBooks Accounting preferences. (It is selected by default.) In a `CreditCardCredit` message, `AccountRef` refers to the bank account or credit card account to which the credit is applied.In a `CreditCardCharge` message, `AccountRef` refers to the bank or credit card company to whom money is owed. How do you increase and decrease amounts in bank accounts? The following requests increase the balance in a bank account: Deposit Add `ReceivePaymentAdd` Journal Entry Add Sales `ReceiptAdd` The following requests decrease the balance in a bank account: `CheckAdd` Bill `PaymentCheckAdd` `JournalEntryAdd` */
+      AccountRef?: AccountRef;
+      PaymentTxnID?: never;
+      /** Additional information about this deposit line. */
+      Memo?: string;
+      /** The check number of a check that a QuickBooks user writes or receives from someone else. */
+      CheckNumber?: string;
+      /** A customer’s payment method, for example, cash, check, or Master Card. A `PaymentMethodRef` aggregate refers to an item on the `PaymentMethod` list. In a request, if a `PaymentMethodRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. In a `SalesReceiptAdd`, `ReceivePaymentAdd`, or `ARRefundCreditCard` request that contains credit card transaction data supplied from QBMS transaction responses, you must specify the payment method, and the payment method must be a credit card type. */
+      PaymentMethodRef?: PaymentMethodRef;
+      /** Classes can be used to separate transactions into meaningful categories. (For example, transactions could be classified according to department, business location, or type of work.) In QuickBooks, class tracking is off by default. A `ClassRef` aggregate refers to one of these named classes. For example, in a `TimeTracking` message, `ClassRef` refers to the QuickBooks class into which the timed activity falls. If a `ClassRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. In an `InvoiceAdd` request, if you specify a `ClassRef` for the whole invoice, that same `ClassRef` is automatically used in the line items. If you want to clear that (that is, have NO `ClassRef` for the line item, you can clear it in the line item by simply not specifying it in the line item. */
+      ClassRef?: ClassRef;
+      /** A monetary amount. */
+      Amount?: string;
+    }
+);
 
 export interface DepositLineRet {
   /** The type of transaction. */

@@ -1,5 +1,6 @@
 import type {
   EndUser,
+  EndUserDeleteOutput,
   EndUserPingOutput,
 } from "@conductor/client-node/resources/EndUsersResource";
 import EndUsersResource from "@conductor/client-node/resources/EndUsersResource";
@@ -97,6 +98,33 @@ describe("EndUsersResource", () => {
 
     it("returns the retrieved EndUser", () => {
       expect(result).toStrictEqual(endUser);
+    });
+  });
+
+  describe("delete", () => {
+    const endUser = generateMockEndUser();
+    const deleteOutput: EndUserDeleteOutput = {
+      id: endUser.id,
+      objectType: "end_user",
+      deleted: true,
+    };
+    let result: EndUserDeleteOutput;
+
+    beforeAll(async () => {
+      mockAdapter.onDelete(`/end-users/${endUser.id}`).reply(200, deleteOutput);
+      result = await endUsersResource.delete(endUser.id);
+    });
+
+    it("sends the correct request", () => {
+      expect(mockAdapter.history["delete"]?.[0]).toMatchObject({
+        method: "delete",
+        url: `/end-users/${endUser.id}`,
+        data: undefined,
+      });
+    });
+
+    it("returns the delete output", () => {
+      expect(result).toStrictEqual(deleteOutput);
     });
   });
 

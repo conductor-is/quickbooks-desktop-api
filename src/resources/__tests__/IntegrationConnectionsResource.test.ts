@@ -48,30 +48,4 @@ describe("IntegrationConnectionsResource", () => {
       });
     });
   });
-
-  describe("retrieve", () => {
-    const integrationConnection = generateMockIntegrationConnection();
-    let result: IntegrationConnection;
-
-    beforeAll(async () => {
-      mockAdapter
-        .onGet(`/integration-connections/${integrationConnection.id}`)
-        .reply(200, integrationConnection);
-      result = await integrationConnectionsResource.retrieve(
-        integrationConnection.id,
-      );
-    });
-
-    it("sends the correct request", () => {
-      expect(mockAdapter.history["get"]?.[0]).toMatchObject({
-        method: "get",
-        url: `/integration-connections/${integrationConnection.id}`,
-        data: undefined,
-      });
-    });
-
-    it("returns the retrieved IntegrationConnection", () => {
-      expect(result).toStrictEqual(integrationConnection);
-    });
-  });
 });

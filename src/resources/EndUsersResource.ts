@@ -46,6 +46,12 @@ export type EndUserCreateInput = Pick<
   "companyName" | "email" | "sourceId"
 >;
 
+export interface EndUserDeleteOutput {
+  readonly id: EndUser["id"];
+  readonly objectType: EndUser["objectType"];
+  readonly deleted: boolean;
+}
+
 export interface EndUserPingOutput {
   /**
    * The time, in milliseconds, that it took to ping the connection.
@@ -79,6 +85,16 @@ export default class EndUsersResource extends BaseResource {
    */
   public async retrieve(id: EndUser["id"]): Promise<EndUser> {
     const { data } = await this.httpClient.get<EndUser>(`${this.ROUTE}/${id}`);
+    return data;
+  }
+
+  /**
+   * Deletes the specified EndUser and all of its connections.
+   */
+  public async delete(id: EndUser["id"]): Promise<EndUserDeleteOutput> {
+    const { data } = await this.httpClient.delete<EndUserDeleteOutput>(
+      `${this.ROUTE}/${id}`,
+    );
     return data;
   }
 
