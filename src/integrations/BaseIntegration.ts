@@ -1,5 +1,5 @@
 import type { EndUser } from "@conductor/client-node/resources/EndUsersResource";
-import type { IntegrationSlug } from "@conductor/client-node/resources/IntegrationConnectionsResource";
+import type { IntegrationSlug } from "@conductor/client-node/resources/types";
 import type { AxiosInstance } from "axios";
 
 export default abstract class BaseIntegration {

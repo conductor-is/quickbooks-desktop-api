@@ -4,7 +4,7 @@ import type {
   EndUserPingOutput,
 } from "@conductor/client-node/resources/EndUsersResource";
 import EndUsersResource from "@conductor/client-node/resources/EndUsersResource";
-import type { ApiListResponse } from "@conductor/client-node/resources/base";
+import type { ApiListResponse } from "@conductor/client-node/resources/types";
 import {
   generateMockEndUser,
   generateMockEndUserCreateInput,

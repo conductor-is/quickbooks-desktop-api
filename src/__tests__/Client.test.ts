@@ -4,7 +4,6 @@ import * as errorHandlingInterceptorsModule from "@conductor/client-node/interce
 import * as loggingInterceptorsModule from "@conductor/client-node/interceptors/logging";
 import AuthSessionsResource from "@conductor/client-node/resources/AuthSessionsResource";
 import EndUsersResource from "@conductor/client-node/resources/EndUsersResource";
-import IntegrationConnectionsResource from "@conductor/client-node/resources/IntegrationConnectionsResource";
 import * as checkForUpdatesModule from "@conductor/client-node/utils/checkForUpdates";
 
 describe("Client", () => {
@@ -16,9 +15,6 @@ describe("Client", () => {
       const clientNew = new Client(apiKey);
       expect(clientNew).toBeInstanceOf(Client);
       expect(clientNew.endUsers).toBeInstanceOf(EndUsersResource);
-      expect(clientNew.integrationConnections).toBeInstanceOf(
-        IntegrationConnectionsResource,
-      );
       expect(clientNew.authSessions).toBeInstanceOf(AuthSessionsResource);
       expect(clientNew.qbd).toBeInstanceOf(QbdIntegration);
     });

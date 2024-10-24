@@ -1,6 +1,3 @@
-import BaseResource from "@conductor/client-node/resources/BaseResource";
-import type { ApiListResponse } from "@conductor/client-node/resources/base";
-
 export type IntegrationSlug = "quickbooks_desktop";
 
 export interface IntegrationConnection {
@@ -31,20 +28,8 @@ export interface IntegrationConnection {
   readonly lastRequestAt: string | null;
 }
 
-export interface IntegrationConnectionPingOutput {
-  readonly duration: number;
-}
-
-export default class IntegrationConnectionsResource extends BaseResource {
-  protected readonly ROUTE = "/integration-connections";
-
-  /**
-   * Returns a list of all IntegrationConnections of all your EndUsers.
-   */
-  public async list(): Promise<ApiListResponse<IntegrationConnection>> {
-    const { data } = await this.httpClient.get<
-      ApiListResponse<IntegrationConnection>
-    >(this.ROUTE);
-    return data;
-  }
+export interface ApiListResponse<T> {
+  readonly url: string;
+  readonly objectType: "list";
+  readonly data: T[];
 }

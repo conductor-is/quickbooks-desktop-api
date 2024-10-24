@@ -1,4 +1,4 @@
-import type { IntegrationConnection } from "@conductor/client-node/resources/IntegrationConnectionsResource";
+import type { IntegrationConnection } from "@conductor/client-node/resources/types";
 import { generateUniqueId } from "@conductor/client-node/utils/test/misc";
 
 export function generateMockIntegrationConnection(

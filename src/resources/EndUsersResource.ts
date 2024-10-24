@@ -1,9 +1,9 @@
 import BaseResource from "@conductor/client-node/resources/BaseResource";
 import type {
+  ApiListResponse,
   IntegrationConnection,
   IntegrationSlug,
-} from "@conductor/client-node/resources/IntegrationConnectionsResource";
-import type { ApiListResponse } from "@conductor/client-node/resources/base";
+} from "@conductor/client-node/resources/types";
 
 export interface EndUser {
   /**

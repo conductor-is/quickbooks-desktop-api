@@ -4,7 +4,6 @@ import { addErrorHandlingInterceptors } from "@conductor/client-node/interceptor
 import { addLoggingInterceptors } from "@conductor/client-node/interceptors/logging";
 import AuthSessionsResource from "@conductor/client-node/resources/AuthSessionsResource";
 import EndUsersResource from "@conductor/client-node/resources/EndUsersResource";
-import IntegrationConnectionsResource from "@conductor/client-node/resources/IntegrationConnectionsResource";
 import { checkForUpdates } from "@conductor/client-node/utils/checkForUpdates";
 import type { AxiosInstance, RawAxiosRequestHeaders } from "axios";
 import axios from "axios";
@@ -18,8 +17,6 @@ export interface ClientOptions {
 
 export default class Client {
   public readonly endUsers: EndUsersResource;
-
-  public readonly integrationConnections: IntegrationConnectionsResource;
 
   public readonly authSessions: AuthSessionsResource;
 
@@ -36,9 +33,6 @@ export default class Client {
     this.httpClient = this.createHttpClient(apiKey, verbose);
 
     this.endUsers = new EndUsersResource(this.httpClient);
-    this.integrationConnections = new IntegrationConnectionsResource(
-      this.httpClient,
-    );
     this.authSessions = new AuthSessionsResource(this.httpClient);
     this.qbd = new QbdIntegration(this.httpClient);
   }

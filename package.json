@@ -1,6 +1,6 @@
 {
   "name": "conductor-node",
-  "version": "11.8.0",
+  "version": "11.8.1",
   "description": "QuickBooks Desktop API for Node.js and TypeScript",
   "keywords": [
     "QuickBooks",
