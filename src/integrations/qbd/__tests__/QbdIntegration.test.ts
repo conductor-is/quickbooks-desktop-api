@@ -28,7 +28,11 @@ describe("QbdIntegration", () => {
 
     describe.each(methodCategories)("%s", (categoryName, methodCategory) => {
       const categoryNameTitleCase =
-        categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+        // Handle the special casing for `arRefundCreditCard`, which begins with
+        // an initialism.
+        categoryName === "arRefundCreditCard"
+          ? "ARRefundCreditCard"
+          : categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
       // Skip `transaction.delete()` and `transaction.void(), which have a
       // unique input and output structure.
       const methods = Object.entries(methodCategory).filter(

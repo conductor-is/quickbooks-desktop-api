@@ -65,6 +65,55 @@ export default class QbdIntegration extends BaseIntegration {
   };
 
   /**
+   * A credit card refund transaction is a transaction that represents a
+   * refund of a credit card charge.
+   */
+  public arRefundCreditCard = {
+    /**
+     * Adds a credit card refund transaction that is linked to one or more
+     * QuickBooks credit memo transactions. You can link the credit card refund
+     * to one or more of those credit transactions.
+     *
+     * Notice that this provides functionality over and above what the UI
+     * provides, which currently allows a user to link only one credit card
+     * refund to one credit transaction.
+     *
+     * See more:
+     * https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/ARRefundCreditCardAdd
+     */
+    add: async (
+      endUserId: string,
+      params: QbdTypes.ARRefundCreditCardAddRq["ARRefundCreditCardAdd"],
+    ): Promise<
+      NonNullable<QbdTypes.ARRefundCreditCardAddRs["ARRefundCreditCardRet"]>
+    > =>
+      this.sendRequestWrapper(
+        endUserId,
+        { ARRefundCreditCardAddRq: { ARRefundCreditCardAdd: params } },
+        "ARRefundCreditCardAddRs",
+        "ARRefundCreditCardRet",
+      ),
+
+    /**
+     * Retrieves the specified credit card refund transaction or transactions.
+     *
+     * See more: https://developer.intuit.com/app/developer/qbdesktop/docs/api-reference/qbdesktop/ARRefundCreditCardQuery
+     */
+    query: async (
+      endUserId: string,
+      params: QbdTypes.ARRefundCreditCardQueryRq = {},
+    ): Promise<
+      NonNullable<QbdTypes.ARRefundCreditCardQueryRs["ARRefundCreditCardRet"]>
+    > =>
+      this.sendRequestWrapper(
+        endUserId,
+        { ARRefundCreditCardQueryRq: params },
+        "ARRefundCreditCardQueryRs",
+        "ARRefundCreditCardRet",
+      ),
+  };
+
+  /**
    * A bill is a transaction that represents a request-for-payment from a vendor
    * for goods or services that it has provided.
    */

@@ -518,6 +518,154 @@ export interface ARAccountRef {
   FullName?: string;
 }
 
+export interface ARRefundCreditCardAdd {
+  /** The customer list includes information about the QuickBooks user’s customers and the individual jobs that are being performed for them. A `CustomerRef` aggregate refers to one of the customers (or customer jobs) on the list. In a request, if a `CustomerRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. Special cases to note: In `SalesReceipt` and `ReceivePayment` requests, `CustomerRef` refers to the customer or customer job to which the payment is credited. In a `TimeTracking` request, `CustomerRef` refers to the customer or customer job to which this time could be billed. If `IsBillable` is set to true, `CustomerRef` is required in `TimeTrackingAdd`. In an `ExpenseLineAdd` request, if `AccountRef` refers to an A/P account, `CustomerRef` must refer to a vendor (not to a customer). If `AccountRef` refers to any other type of account, the `CustomerRef` must refer to a customer. */
+  CustomerRef: CustomerRef;
+  /** In an `ARRefundCreditCardAdd`, the account which is the source of funds for the credit card refund. Normally this is Undeposited Funds. However, you can specify another account if you wish. If you specify nothing here, Undeposited Funds is used by default. */
+  RefundFromAccountRef?: RefundFromAccountRef;
+  /** Refers to an accounts receivable account in the QuickBooks file. (The `AccountType` of this account will be `AccountsReceivable`.) If an `ARAccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.
+
+  If this field is in a transaction that links to other transactions, make sure this `ARAccountRef` matches the `ARAccountRef` used in the other transactions. For example, in an `ARRefundCreditCard` transaction, the `ARAccountRef` of the credit card refund transaction must match the `ARAccountRef` used in each of the linked credit transactions. */
+  ARAccountRef?: ARAccountRef;
+  /** The date of the transaction. In some cases, if you leave `TxnDate` out of an -Add message, QuickBooks will prefill `TxnDate` with the date of the last-saved transaction of the same type. */
+  TxnDate?: string;
+  /** A string of characters that refers to this transaction and that can be arbitrarily changed by the QuickBooks user.
+
+  In a `BillPaymentCheckAdd` request, if you want to set the check number, use `RefNumber`.
+
+  Note (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request (that is, or ), the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
+  RefNumber?: string;
+  /** If an address request fails, some combination of address fields might be too long. In a Check, `BillPaymentCheck`, or `SalesTaxPaymentCheck` message, `Address` is the address that will print on the check. */
+  Address?: Address;
+  /** A customer’s payment method, for example, cash, check, or Master Card. A `PaymentMethodRef` aggregate refers to an item on the `PaymentMethod` list. In a request, if a `PaymentMethodRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.
+
+  In a `SalesReceiptAdd`, `ReceivePaymentAdd`, or `ARRefundCreditCard` request that contains credit card transaction data supplied from QBMS transaction responses, you must specify the payment method, and the payment method must be a credit card type. */
+  PaymentMethodRef?: PaymentMethodRef;
+  /** Additional information. */
+  Memo?: string;
+  /** Contains data from the credit card transaction used in the payment. This data originates from a previous `qbmsXML` credit card transaction. The data following the element `CreditCardTxnInputInfo`” data is the data from the original `qbmsXML` request. The “`CreditCardTxnResultInfo`” is the data from the original `qbmsXML` response. */
+  CreditCardTxnInfo?: CreditCardTxnInfo;
+  /** The exchange rate is the market price for which this currency can be exchanged for the currency used by the QuickBooks company file as the “home” currency. The exchange rate should be considered a snapshot of the rates in effect at the `AsOfDate`.
+
+  You can update the exchange rate using the exchange rate property when you add a transaction. However, you need to obtain and supply the exchange rate. If you are using USD (United States Dollars) as the home currency and are connected to the Internet, you can download the current exchange rates for all active currencies automatically in the QuickBooks UI by selecting Lists->Currency->Activities->Download latest exchange rates. (Currently, you can’t do this in the SDK.) */
+  ExchangeRate?: number;
+  /** Allows for the attachment of a user defined GUID value. */
+  ExternalGUID?: string;
+  /** The list of credit transactions that are being linked and used in this credit card refund. */
+  RefundAppliedToTxnAdd: RefundAppliedToTxnAdd | RefundAppliedToTxnAdd[];
+}
+
+export interface ARRefundCreditCardAddRq {
+  ARRefundCreditCardAdd: ARRefundCreditCardAdd;
+  /** You use this if you want to limit the data that will be returned in the response. In this list, you specify the name of each top-level element or aggregate that you want to be returned in the response to the request. You cannot specify fields within an aggregate, for example, you cannot specify a `City` within an `Address`: you must specify `Address` and will get the entire address.
+
+  The names specified in the list are not parsed, so you must be especially careful to supply valid names, properly cased. No error is returned in the status code if you specify an invalid name.
+
+  Notice that if you want to return custom data or private data extensions, you must specify the `DataExtRet` element and you must supply the `OwnerID` set to either a value of 0 (custom data) or the GUID for the private data. */
+  IncludeRetElement?: string | string[];
+}
+
+export interface ARRefundCreditCardAddRs {
+  ARRefundCreditCardRet?: ARRefundCreditCardRet;
+  ErrorRecovery?: ErrorRecovery;
+}
+
+export interface ARRefundCreditCardQueryRq {
+  /** One or more `TxnID` values. QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQuery` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID?: string | string[];
+  /** A list of one or more `RefNumber` values. A `RefNumber` is a string of characters that refers to a transaction and that can be arbitrarily changed by the QuickBooks user. Note (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request, the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
+  RefNumber?: string | string[];
+  /** A list of one or more case sensitive `RefNumber` values. A `RefNumber` is a string of characters that refers to a transaction and that can be arbitrarily changed by the QuickBooks user. You should use this case sensitive ref number list rather than the older `RefNumber` list, because it provides much better performance in certain circumstances. The older `refNumber` list provided slow performance if the `refNumber` values contained letters, not just digits. This `RefNumberCaseSensitive` list, new in SDK 4.0, eliminates this performance hit. */
+  RefNumberCaseSensitive?: string | string[];
+  /** Limits the number of objects that a query returns. (To get a count of how many objects could possibly be returned, use the `metaData` query attribute.) If you include a `MaxReturned` value, it must be at least 1. */
+  MaxReturned?: number;
+  /** Filters according to the dates when transactions were last modified. The `ModifiedDateRangeFilter` aggregate is not required to contain any elements, but if it is empty, we recommend that you leave it out altogether. Note that the time portion of the `FromModifiedDate` and `ToModifiedDate` fields was not supported in qbXML version 1.0 or 1.1. (To filter according to the dates when transactions were deleted, use a `TxnDeletedQuery` message.) */
+  ModifiedDateRangeFilter?: ModifiedDateRangeFilter;
+  /** Filters according to the original transaction dates. */
+  TxnDateRangeFilter?: TxnDateRangeFilter;
+  /** An entity refers to a person on the QuickBooks Customer list, Vendor list, Employee list, or Other Names list. You can use an `EntityQuery` request to get information about all the entities that are set up in the QuickBooks file. In an `ARRefundCreditCard` query, this must be a customer/customer job. */
+  EntityFilter?: EntityFilter;
+  /** Filters according to the account name or `ListID`. If the “Use account numbers” preference is enabled in the QuickBooks company file, you can specify an account number (instead of an account name) for `FullName` and get the account you’re looking for. But if numbers have been used as account names, confusion could arise. For example, if you queried for an account named 2050, and 2050 happened to be the account number of a totally different account, the query would not return what you asked for (the account named 2050), but instead would return the account with the account number 2050. This problem will not happen if the “Use account numbers” preference is turned off in the QuickBooks file, orthe account name exactly matches the account number. (In this case, query would return the correct account either way.) To avoid this problem: Do not name an account using a number unless the number exactly matches the account’s account number. If an account name must contain a number that does not match its own account number, have the QuickBooks user change the account’s name slightly, for example `to` 2050a. */
+  AccountFilter?: AccountFilter;
+  /** Filters according to `RefNumber`. */
+  RefNumberFilter?: RefNumberFilter;
+  /** Filters according to `RefNumber`. The filtering code will do a numerical comparison (if `FromRefNumber` and `ToRefNumber` only contain digits) or a lexicographical comparison (if either `FromRefNumber` or `ToRefNumber` contain any nondigit characters). In the first situation, if you need to query for a `RefNumber` that is larger than the maximum long integer value of 2147483647, one workaround is to specify a `FromRefNumber` that is less than or equal to 2147483647 without specifying a `ToRefNumber`. */
+  RefNumberRangeFilter?: RefNumberRangeFilter;
+  /** Filters by the specified currency. */
+  CurrencyFilter?: CurrencyFilter;
+  /** This filter allows you to omit line items from a query response to get a smaller result. The default value is false, so line items are omitted by default. Set `IncludeLineItems` to true to include line items in the response if you don’t mind getting a larger result. */
+  IncludeLineItems?: boolean;
+  /** You use this if you want to limit the data that will be returned in the response. In this list, you specify the name of each top-level element or aggregate that you want to be returned in the response to the request. You cannot specify fields within an aggregate, for example, you cannot specify a `City` within an `Address`: you must specify `Address` and will get the entire address. The names specified in the list are not parsed, so you must be especially careful to supply valid names, properly cased. No error is returned in the status code if you specify an invalid name. Notice that if you want to return custom data or private data extensions, you must specify the `DataExtRet` element and you must supply the `OwnerID` set to either a value of 0 (custom data) or the GUID for the private data. */
+  IncludeRetElement?: string | string[];
+  /** Zero or more `OwnerID` values. `OwnerID` refers to the owner of a data extension:If `OwnerID` is 0, this is a public data extension, also known as a custom field. Custom fields appear in the QuickBooks UI.If `OwnerID` is a GUID, for example `{6B063959-81B0-4622-85D6-F548C8CCB517}`, this field is a private data extension defined by an integrated application. Private data extensions do not appear in the QuickBooks UI. Note that `OwnerID` values are not case-sensitive, meaning that if you enter an `OwnerID` value with lower-case letters, the value will be saved and returned with upper-case letters. When you share a private data extension with another application, the other application must know both the `OwnerID` and the `DataExtName`, as these together form a data extension’s unique name. */
+  OwnerID?: string | string[];
+}
+
+export interface ARRefundCreditCardQueryRs {
+  ARRefundCreditCardRet: ARRefundCreditCardRet[];
+}
+
+export interface ARRefundCreditCardRet {
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests.
+
+  Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID?: string;
+  /** Time the object was created. */
+  TimeCreated?: string;
+  /** Time the object was last modified. */
+  TimeModified?: string;
+  /** A number that the server generates and assigns to this object. Every time the object is changed, the server will change its `EditSequence` value. When you try to modify a list object, you must provide its `EditSequence`. The server compares the `EditSequence` you provide with the `EditSequence` in memory to make sure you are dealing with the latest copy of the object. If you are not, the server will reject the request and return an error. Because `EditSequence` is only used to check whether two objects match, there is no reason to interpret its value. */
+  EditSequence?: string;
+  /** An identifying number for this transaction. */
+  TxnNumber?: number;
+  /** The customer list includes information about the QuickBooks user’s customers and the individual jobs that are being performed for them. A `CustomerRef` aggregate refers to one of the customers (or customer jobs) on the list. In a request, if a `CustomerRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored. Special cases to note: In `SalesReceipt` and `ReceivePayment` requests, `CustomerRef` refers to the customer or customer job to which the payment is credited. In a `TimeTracking` request, `CustomerRef` refers to the customer or customer job to which this time could be billed. If `IsBillable` is set to true, `CustomerRef` is required in `TimeTrackingAdd`. In an `ExpenseLineAdd` request, if `AccountRef` refers to an A/P account, `CustomerRef` must refer to a vendor (not to a customer). If `AccountRef` refers to any other type of account, the `CustomerRef` must refer to a customer. */
+  CustomerRef?: CustomerRef;
+  /** In an `ARRefundCreditCardAdd`, the account which is the source of funds for the credit card refund. Normally this is Undeposited Funds. However, you can specify another account if you wish. If you specify nothing here, Undeposited Funds is used by default. */
+  RefundFromAccountRef?: RefundFromAccountRef;
+  /** Refers to an accounts receivable account in the QuickBooks file. (The `AccountType` of this account will be `AccountsReceivable`.) If an `ARAccountRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.
+
+  If this field is in a transaction that links to other transactions, make sure this `ARAccountRef` matches the `ARAccountRef` used in the other transactions. For example, in an `ARRefundCreditCard` transaction, the `ARAccountRef` of the credit card refund transaction must match the `ARAccountRef` used in each of the linked credit transactions. */
+  ARAccountRef?: ARAccountRef;
+  /** The date of the transaction. In some cases, if you leave `TxnDate` out of an -Add message, QuickBooks will prefill `TxnDate` with the date of the last-saved transaction of the same type. */
+  TxnDate?: string;
+  /** A string of characters that refers to this transaction and that can be arbitrarily changed by the QuickBooks user.
+
+  In a `BillPaymentCheckAdd` request, if you want to set the check number, use `RefNumber`.
+
+  Note (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request (that is, or ), the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
+  RefNumber?: string;
+  /** Total amount of money paid or received. In a receive payment add transaction that has payment amount elements (such as `AppliedToTxnAdd` lines) you must supply a `TotalAmount` and the sum of all the `PaymentAmount` elements must not be greater than the `TotalAmount`. */
+  TotalAmount?: string;
+  /** The currency object contains all of the information needed by QuickBooks to display and use. For built-in currencies, the name and currency code values are internationally accepted values and thus are not editable. The comma format is editable, as is the `IsActive` status. For user-defined currencies, every value in the object is editable including name and currency code.
+
+  When used with `PriceLevels`, the `CurrencyRef` should only be used with “per item” price levels. */
+  CurrencyRef?: CurrencyRef;
+  /** The exchange rate is the market price for which this currency can be exchanged for the currency used by the QuickBooks company file as the “home” currency. The exchange rate should be considered a snapshot of the rates in effect at the `AsOfDate`.
+
+  You can update the exchange rate using the exchange rate property when you add a transaction. However, you need to obtain and supply the exchange rate. If you are using USD (United States Dollars) as the home currency and are connected to the Internet, you can download the current exchange rates for all active currencies automatically in the QuickBooks UI by selecting Lists->Currency->Activities->Download latest exchange rates. (Currently, you can’t do this in the SDK.) */
+  ExchangeRate?: number;
+  /** Total amount of money paid or received in the Home Currency. */
+  TotalAmountInHomeCurrency?: string;
+  /** If an address request fails, some combination of address fields might be too long. In a Check, `BillPaymentCheck`, or `SalesTaxPaymentCheck` message, `Address` is the address that will print on the check. */
+  Address?: Address;
+  /** The address expressed as an address block of `Addr1` through `Addr5`, depending on the number of lines in the original request that created the address. */
+  AddressBlock?: AddressBlock;
+  /** A customer’s payment method, for example, cash, check, or Master Card. A `PaymentMethodRef` aggregate refers to an item on the `PaymentMethod` list. In a request, if a `PaymentMethodRef` aggregate includes both `FullName` and `ListID`, `FullName` will be ignored.
+
+  In a `SalesReceiptAdd`, `ReceivePaymentAdd`, or `ARRefundCreditCard` request that contains credit card transaction data supplied from QBMS transaction responses, you must specify the payment method, and the payment method must be a credit card type. */
+  PaymentMethodRef?: PaymentMethodRef;
+  /** Additional information. */
+  Memo?: string;
+  /** Contains data from the credit card transaction used in the payment. This data originates from a previous `qbmsXML` credit card transaction. The data following the element `CreditCardTxnInputInfo`” data is the data from the original `qbmsXML` request. The “`CreditCardTxnResultInfo`” is the data from the original `qbmsXML` response. */
+  CreditCardTxnInfo?: CreditCardTxnInfo;
+  /** Allows for the attachment of a user defined GUID value. */
+  ExternalGUID?: string;
+  /** The list of credit transactions that are being linked and used in this credit card refund. */
+  RefundAppliedToTxnRet?: RefundAppliedToTxnRet | RefundAppliedToTxnRet[];
+  /** A list of `IDataExtRet` objects, each of which represents a field that has been added to QuickBooks as a data extension. */
+  DataExtRet?: DataExtRet | DataExtRet[];
+}
+
 export interface AssetAccountRef {
   /** Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
   ListID?: string;
@@ -11520,6 +11668,47 @@ export interface RefNumberRangeFilter {
   FromRefNumber?: string;
   /** The final `RefNumber` in the search range. If `ToRefNumber` is omitted, the range will end with last number on the list. */
   ToRefNumber?: string;
+}
+
+export interface RefundAppliedToTxnAdd {
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests.
+
+  Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID: string;
+  /** Specifies the amount to be taken from the credit transaction you are linking via this aggregate. The amount specified in this aggregate cannot exceed the amount of the credit transaction you are linking. If you supply an amount that exceeds, you’ll get a runtime error. */
+  RefundAmount: string;
+}
+
+export interface RefundAppliedToTxnRet {
+  /** QuickBooks generates a unique `TxnID` for each transaction that is added to QuickBooks. A `TxnID` returned from a request can be used to refer to the transaction in subsequent requests.
+
+  Notice that you cannot supply the `TxnID` of a `TimeTracking` transaction to `TransactionQueryRq` requests. If you do, you get an error stating that no such record could be found, even though the transaction is in QuickBooks. This behavior reflects the behavior in the QuicKBooks UI in the Find window. */
+  TxnID: string;
+  /** The type of transaction. */
+  TxnType: TxnType;
+  /** The date of the transaction. In some cases, if you leave `TxnDate` out of an -Add message, QuickBooks will prefill `TxnDate` with the date of the last-saved transaction of the same type. */
+  TxnDate: string;
+  /** A string of characters that refers to this transaction and that can be arbitrarily changed by the QuickBooks user.
+
+  In a `BillPaymentCheckAdd` request, if you want to set the check number, use `RefNumber`.
+
+  Note (especially relevant to `CheckAdd` requests): When `RefNumber` is left blank in an SDK transaction add request (that is, or ), the `RefNumber` will be left blank in QuickBooks. This behavior is new as of QBFC3. It used to select the next sequential reference number since the last one used by QuickBooks, as though no `RefNumber` had been provided. This is especially relevant to `CheckAdd` requests because with the current behavior, you will not know the number until the check is printed. */
+  RefNumber?: string;
+  /** Available credit. */
+  CreditRemaining: string;
+  /** Specifies the amount to be taken from the credit transaction you are linking via this aggregate. The amount specified in this aggregate cannot exceed the amount of the credit transaction you are linking. If you supply an amount that exceeds, you’ll get a runtime error. */
+  RefundAmount: string;
+  /** The amount of the remaining credit, expressed in units of the current home currency. */
+  CreditRemainingInHomeCurrency?: string;
+  /** Specifies the amount to be taken from the credit transaction you are linking via this aggregate in the home currency. */
+  RefundAmountInHomeCurrency?: string;
+}
+
+export interface RefundFromAccountRef {
+  /** Along with `FullName`, `ListID` is a way to identify a list object. When a list object is added to QuickBooks through the SDK or through the QuickBooks user interface, the server assigns it a `ListID`. A `ListID` is not unique across lists, but it is unique across each particular type of list. For example, two customers could not have the same `ListID`, and a customer could not have the same `ListID` as an employee (because Customer and Employee are both name lists). But a customer could have the same `ListID` as a non-inventory item. */
+  ListID?: string;
+  /** `FullName` (along with `ListID`) is a way to identify a list object. The `FullName` is the name prefixed by the names of each ancestor, for example `Jones:Kitchen:Cabinets`. `FullName` values are not case-sensitive. */
+  FullName?: string;
 }
 
 export type Relation =
