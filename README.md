@@ -6,7 +6,7 @@
       <img alt="Conductor logo" src="https://github.com/conductor-is/quickbooks-desktop-api/assets/170023/d67464b8-53a7-4d33-afeb-05a2efde1fa8" width="325">
     </picture>
   </a>
-  <h3>QuickBooks Desktop API for Node.js/TypeScript, Python, and REST</h3>
+  <h3>QuickBooks Desktop API for Python, Node.js, TypeScript, and REST</h3>
   <a href="https://docs.conductor.is/overview/quickstart">Quickstart</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://conductor.is">Website</a>
