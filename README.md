@@ -27,7 +27,7 @@
 
 ## What is Conductor?
 
-Conductor is a real-time, fully-typed API for **QuickBooks Desktop** (sometimes called QuickBooks Enterprise), available via Node.js/TypeScript, Python, and REST. In just a few lines, get real-time access to fetch, create, or update [_any_ QuickBooks Desktop object type](https://docs.conductor.is/qbd/api#supported-object-types) and receive a fully-typed response. Check out [the documentation](https://docs.conductor.is) to get started.
+Conductor is a real-time, fully-typed API for **QuickBooks Desktop** (sometimes called QuickBooks Enterprise), available via Python, Node.js, TypeScript, and REST. In just a few lines, get real-time access to fetch, create, or update [_any_ QuickBooks Desktop object type](https://docs.conductor.is/qbd/api#supported-object-types) and receive a fully-typed response. Check out [the documentation](https://docs.conductor.is) to get started.
 
 Conductor, the company, is building a data integration platform for vertical SaaS companies, starting with QuickBooks Desktop. Our team has spent over a decade building companies, scaling vast software systems, and obsessing over quality.
 
@@ -41,7 +41,7 @@ Conductor, the company, is building a data integration platform for vertical Saa
 - **Any data type:** Query, create, or update any QuickBooks Desktop data type.
 - **Real-time**: Get real-time updates on your QuickBooks Desktop data. No queues, no polling.
 - **Modern API:** JSON-based REST API, replacing the old XML-based SOAP model.
-- **Typed Node.js client:** Fully typed library with autocomplete, inline docs, and type validation for endpoints, parameters, and responses.
+- **Typed client libraries:** Fully typed libraries in Node.js and Python with autocomplete, inline docs, and type validation for endpoints, parameters, and responses.
 - **Request handling:** Invisibly manages queues, timeouts, retries, and pagination.
 - **Multi-company support:** Connects to multiple QuickBooks Desktop company files.
 - **Validation:** Sanitizes and validates all inputs and outputs.
