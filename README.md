@@ -56,8 +56,8 @@ This repository is a library for conveniently accessing Conductor's QuickBooks D
 
 ## Requirements
 
-1. A Conductor API key pair: one secret key, one publishable key. **Please [sign up to join the beta](https://73a5v9t55ed.typeform.com/to/VRX7rfrN).**
-2. Node.js v16 or later.
+1. A Conductor account. Sign up [here](https://dashboard.conductor.is/sign-up).
+2. A QuickBooks Desktop instance for testing. If you don't have one, you can [create a free test instance](https://docs.conductor.is/qbd/test-instance).
 
 ## Documentation
 
