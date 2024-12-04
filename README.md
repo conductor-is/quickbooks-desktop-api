@@ -7,7 +7,7 @@
     </picture>
   </a>
   <h3>QuickBooks Desktop API for Python, Node.js, TypeScript, and REST</h3>
-  <a href="https://docs.conductor.is/overview/quickstart">Quickstart</a>
+  <a href="https://docs.conductor.is/quickstart">Quickstart</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://conductor.is">Website</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -61,12 +61,11 @@ This repository is a library for conveniently accessing Conductor's QuickBooks D
 
 ## Documentation
 
-1. [Get Started](https://docs.conductor.is/overview/get-started)
-2. [Quickstart](https://docs.conductor.is/overview/quickstart)
-3. [Node.js / TypeScript API](https://docs.conductor.is/qbd/api)
-4. [REST API](https://docs.conductor.is/qbd/rest)
-5. [API Reference](https://docs.conductor.is/apis)
-6. [Error Handling](https://docs.conductor.is/usage/error-handling)
+1. [Quickstart](https://docs.conductor.is/quickstart)
+2. [Node.js / TypeScript API](https://docs.conductor.is/qbd/api)
+3. [REST API](https://docs.conductor.is/qbd/rest)
+4. [API Reference](https://docs.conductor.is/apis)
+5. [Error Handling](https://docs.conductor.is/usage/error-handling)
 
 ## Installation
 
